@@ -32,28 +32,11 @@ function FloatingIcon({ position, initialIconIndex, movementPattern, onIconChang
     const bounceStartTimeRef = useRef<number | null>(null);
     const hasBouncedRef = useRef(false);
     const [isMobile, setIsMobile] = useState(false);
-    const [iconSize, setIconSize] = useState(1.2);
     
-    // Detect mobile screen and update icon size responsively
+    // Detect mobile screen
     useEffect(() => {
         const checkMobile = () => {
-            const width = window.innerWidth;
-            setIsMobile(width < 768);
-            
-            // Responsive icon size
-            if (width < 375) {
-                setIconSize(0.4); // Extra small mobile
-            } else if (width < 640) {
-                setIconSize(0.5); // Small mobile
-            } else if (width < 768) {
-                setIconSize(0.7); // Large mobile/small tablet
-            } else if (width < 1024) {
-                setIconSize(0.9); // Tablet
-            } else if (width < 1280) {
-                setIconSize(1.1); // Small desktop
-            } else {
-                setIconSize(1.2); // Desktop
-            }
+            setIsMobile(window.innerWidth < 768);
         };
         
         checkMobile();
@@ -193,7 +176,7 @@ function FloatingIcon({ position, initialIconIndex, movementPattern, onIconChang
             }}
             scale={1}
         >
-            <planeGeometry args={[iconSize, iconSize]} />
+            <planeGeometry args={[isMobile ? 0.8 : 1.2, isMobile ? 0.8 : 1.2]} />
             <meshStandardMaterial
                 key={currentIconIndex}
                 map={texture}
@@ -218,45 +201,13 @@ export default function FloatingIcons() {
         const updatePositions = () => {
             const width = window.innerWidth;
             
-            if (width < 375) {
-                // Extra small mobile
+            if (width < 768) {
+                // Mobile - static positions at corners, smaller and closer, contained within viewport
                 setIconPositions([
-                    [-0.4, 0.8, -0.5],   // Top left
-                    [0.4, 0.8, -0.5],    // Top right
-                    [-0.4, -0.8, 0],     // Bottom left
-                    [0.4, -0.8, 0],      // Bottom right
-                ]);
-            } else if (width < 640) {
-                // Small mobile
-                setIconPositions([
-                    [-0.5, 1.0, -0.5],   // Top left
-                    [0.5, 1.0, -0.5],    // Top right
-                    [-0.5, -1.0, 0],     // Bottom left
-                    [0.5, -1.0, 0],      // Bottom right
-                ]);
-            } else if (width < 768) {
-                // Large mobile/small tablet
-                setIconPositions([
-                    [-0.6, 1.1, -0.5],   // Top left
-                    [0.6, 1.1, -0.5],    // Top right
-                    [-0.6, -1.1, 0],     // Bottom left
-                    [0.6, -1.1, 0],      // Bottom right
-                ]);
-            } else if (width < 1024) {
-                // Tablet
-                setIconPositions([
-                    [-1.2, 0.9, -0.5],   // Top left
-                    [1.2, 1.0, -0.5],    // Top right
-                    [-1.5, -1.0, 0],     // Bottom left
-                    [2.5, -0.7, 0],      // Bottom right
-                ]);
-            } else if (width < 1280) {
-                // Small desktop
-                setIconPositions([
-                    [-1.5, 0.95, -0.5],  // Top left
-                    [1.4, 1.1, -0.5],    // Top right
-                    [-1.9, -1.1, 0],     // Bottom left
-                    [3.5, -0.75, 0],     // Bottom right
+                    [-0.5, 1.2, -0.5],   // Top left - static, closer to center
+                    [0.5, 1.2, -0.5],    // Top right - static, closer to center
+                    [-0.5, -1.2, 0],     // Bottom left - static, closer to center
+                    [0.5, -1.2, 0],      // Bottom right - static, closer to center
                 ]);
             } else {
                 // Desktop - original positions
@@ -264,7 +215,7 @@ export default function FloatingIcons() {
                     [-1.7, 1, -0.5],     // Top left
                     [1.6, 1.2, -0.5],    // Top right
                     [-2.2, -1.2, 0],     // Bottom left
-                    [2.2, -0.8, 0],        // Bottom right
+                    [2.2, -0.8, 0],      // Bottom right
                 ]);
             }
         };
