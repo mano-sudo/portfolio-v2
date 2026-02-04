@@ -70,7 +70,7 @@ export default function Skills() {
     return (
         <section ref={sectionRef} className="skills-section max-w-4xl mx-auto px-6 py-20">
             <div className="mb-12">
-                <span className="text-sm text-gray-500 uppercase tracking-wider">Skills</span>
+                <span className="text-sm text-gray-300 uppercase tracking-wider">Skills</span>
                 <h2 className="text-4xl md:text-5xl font-bold mt-2 mb-4">Technologies</h2>
                 <p className="text-gray-400 text-lg">
                     A comprehensive overview of my technical expertise across frontend, backend, and development tools.
@@ -86,7 +86,7 @@ export default function Skills() {
                             <div key={index} className="skill-item">
                                 <div className="flex justify-between mb-2">
                                     <span className="text-gray-300 text-sm font-medium">{skill.name}</span>
-                                    <span className="text-gray-500 text-xs">{skill.level}%</span>
+                                    <span className="text-gray-300 text-xs">{skill.level}%</span>
                                 </div>
                                 <div className="h-1 bg-gray-800 rounded-full overflow-hidden">
                                     <div 
@@ -108,7 +108,7 @@ export default function Skills() {
                             <div key={index} className="skill-item">
                                 <div className="flex justify-between mb-2">
                                     <span className="text-gray-300 text-sm font-medium">{skill.name}</span>
-                                    <span className="text-gray-500 text-xs">{skill.level}%</span>
+                                    <span className="text-gray-300 text-xs">{skill.level}%</span>
                                 </div>
                                 <div className="h-1 bg-gray-800 rounded-full overflow-hidden">
                                     <div 
@@ -130,7 +130,7 @@ export default function Skills() {
                             <div key={index} className="skill-item">
                                 <div className="flex justify-between mb-2">
                                     <span className="text-gray-300 text-sm font-medium">{skill.name}</span>
-                                    <span className="text-gray-500 text-xs">{skill.level}%</span>
+                                    <span className="text-gray-300 text-xs">{skill.level}%</span>
                                 </div>
                                 <div className="h-1 bg-gray-800 rounded-full overflow-hidden">
                                     <div 

@@ -78,7 +78,7 @@ export default function Projects() {
     return (
         <section ref={sectionRef} className="projects-section max-w-4xl mx-auto px-6 py-20">
             <div className="mb-12">
-                <span className="text-sm text-gray-500 uppercase tracking-wider">Projects</span>
+                <span className="text-sm text-gray-300 uppercase tracking-wider">Projects</span>
                 <h2 className="text-4xl md:text-5xl font-bold mt-2 mb-4">Featured Work</h2>
                 <p className="text-gray-400 text-lg">
                     A collection of projects showcasing my skills in full-stack development, modern frameworks, and user experience design.
@@ -114,18 +114,20 @@ export default function Projects() {
                                         href={project.github} 
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="text-sm text-gray-500 hover:text-gray-300 transition-colors flex items-center gap-2"
+                                        aria-label={`View ${project.title} source code on GitHub`}
+                                        className="text-sm text-gray-300 hover:text-gray-100 transition-colors flex items-center gap-2"
                                     >
-                                        <Github className="w-4 h-4" />
+                                        <Github className="w-4 h-4" aria-hidden="true" />
                                         <span>View Code</span>
                                     </a>
                                     <a 
                                         href={project.live} 
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="text-sm text-gray-500 hover:text-purple-400 transition-colors flex items-center gap-2"
+                                        aria-label={`View ${project.title} live demo`}
+                                        className="text-sm text-gray-300 hover:text-purple-400 transition-colors flex items-center gap-2"
                                     >
-                                        <ExternalLink className="w-4 h-4" />
+                                        <ExternalLink className="w-4 h-4" aria-hidden="true" />
                                         <span>Live Demo</span>
                                     </a>
                                 </div>

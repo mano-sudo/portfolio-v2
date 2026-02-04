@@ -69,7 +69,7 @@ export default function Experience() {
     return (
         <section ref={sectionRef} className="experience-section max-w-3xl mx-auto px-6 py-20">
             <div className="mb-12">
-                <span className="text-sm text-gray-500 uppercase tracking-wider">Experience</span>
+                <span className="text-sm text-gray-300 uppercase tracking-wider">Experience</span>
                 <h2 className="text-4xl md:text-5xl font-bold mt-2 mb-4">Work History</h2>
                 <p className="text-gray-400 text-lg">
                     A journey through my professional career, highlighting key achievements and technologies I've worked with.
@@ -80,7 +80,7 @@ export default function Experience() {
                 {experiences.map((exp, index) => (
                     <article key={index} className="experience-item border-l-2 border-gray-800 pl-8 pb-12 last:pb-0">
                         <div className="mb-4">
-                            <span className="text-xs text-gray-500 uppercase tracking-wider">{exp.period}</span>
+                            <span className="text-xs text-gray-300 uppercase tracking-wider">{exp.period}</span>
                             <h3 className="text-2xl font-bold mt-2 mb-1">{exp.title}</h3>
                             <div className="flex items-center gap-4 text-gray-400 text-sm mb-4">
                                 <span className="flex items-center gap-1">

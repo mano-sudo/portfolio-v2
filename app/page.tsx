@@ -1,5 +1,5 @@
 import Hero from "./components/hero/hero";
-import ThreeBackground from "./components/three-background";
+import GridScanBackground from "./components/gridscan-background";
 import About from "./components/sections/about";
 import Stats from "./components/sections/stats";
 import Experience from "./components/sections/experience";
@@ -13,8 +13,20 @@ import Footer from "./components/footer";
 
 export default function Home() {
   return (
-    <main className="w-full min-h-screen overflow-y-auto scroll-smooth bg-black">
-      <ThreeBackground />
+    
+    <main className="w-full min-h-screen overflow-y-auto scroll-smooth relative" style={{ scrollbarGutter: 'stable' }}>
+      <GridScanBackground
+        sensitivity={0.55}
+        lineThickness={1}
+        linesColor="#392e4e"
+        gridScale={0.1}
+        scanColor="#FF9FFC"
+        scanOpacity={0.4}
+        enablePost={true}
+        bloomIntensity={0.6}
+        chromaticAberration={0.002}
+        noiseIntensity={0.01}
+      />
       <Hero />
       <Stats />
       <About />

@@ -66,7 +66,8 @@ export default function AppNavbar() {
                 
                 {/* Right side nav */}
                 <Link
-                    href="#"
+                    href="#contact"
+                    aria-label="Navigate to contact section"
                     className="text-white uppercase tracking-wider text-xs md:text-sm font-medium hover:text-white/80 transition-colors"
                 >
                     LET'S WORK

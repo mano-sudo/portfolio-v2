@@ -62,7 +62,7 @@ export default function Blog() {
     return (
         <section ref={sectionRef} className="blog-section max-w-4xl mx-auto px-6 py-20">
             <div className="mb-12">
-                <span className="text-sm text-gray-500 uppercase tracking-wider">Blog</span>
+                <span className="text-sm text-gray-300 uppercase tracking-wider">Blog</span>
                 <h2 className="text-4xl md:text-5xl font-bold mt-2 mb-4">Latest Articles</h2>
                 <p className="text-gray-400 text-lg">
                     Thoughts, tutorials, and insights on web development, design, and technology.
@@ -86,7 +86,7 @@ export default function Blog() {
                             {post.excerpt}
                         </p>
 
-                        <div className="flex items-center gap-6 text-sm text-gray-500 mb-6">
+                        <div className="flex items-center gap-6 text-sm text-gray-300 mb-6">
                             <div className="flex items-center gap-2">
                                 <Calendar className="w-4 h-4" />
                                 <span>{post.date}</span>
@@ -99,10 +99,11 @@ export default function Blog() {
 
                         <a 
                             href="#" 
+                            aria-label={`Read more about ${post.title}`}
                             className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors text-sm font-medium border-b border-purple-400/30 hover:border-purple-400 pb-1"
                         >
                             Read more
-                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
                         </a>
                     </article>
                 ))}
@@ -111,10 +112,11 @@ export default function Blog() {
             <div className="mt-12 pt-8 border-t border-gray-800">
                 <a 
                     href="#" 
+                    aria-label="View all blog articles"
                     className="inline-flex items-center gap-2 text-gray-400 hover:text-gray-300 transition-colors"
                 >
                     View All Articles
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 </a>
             </div>
         </section>

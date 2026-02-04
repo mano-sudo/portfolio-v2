@@ -13,7 +13,7 @@ export default function Footer() {
                         <p className="text-gray-400 text-sm">
                             © {currentYear} Roman Caseres. All rights reserved.
                         </p>
-                        <p className="text-gray-500 text-xs mt-1">
+                        <p className="text-gray-300 text-xs mt-1">
                             Built with Next.js, Three.js, and GSAP
                         </p>
                     </div>

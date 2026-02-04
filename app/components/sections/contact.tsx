@@ -25,9 +25,9 @@ export default function Contact() {
     }, []);
 
     return (
-        <section ref={sectionRef} className="contact-section max-w-3xl mx-auto px-6 py-20">
+        <section id="contact" ref={sectionRef} className="contact-section max-w-3xl mx-auto px-6 py-20">
             <div className="mb-12">
-                <span className="text-sm text-gray-500 uppercase tracking-wider">Contact</span>
+                <span className="text-sm text-gray-300 uppercase tracking-wider">Contact</span>
                 <h2 className="text-4xl md:text-5xl font-bold mt-2 mb-4">Get In Touch</h2>
             </div>
             
@@ -38,25 +38,26 @@ export default function Contact() {
                 
                 <a 
                     href="mailto:romancaseres929@gmail.com"
+                    aria-label="Send email to romancaseres929@gmail.com"
                     className="inline-flex items-center gap-2 text-lg text-gray-300 hover:text-purple-400 transition-colors border-b border-gray-700 hover:border-purple-400 pb-1"
                 >
-                    <Mail className="w-5 h-5" />
+                    <Mail className="w-5 h-5" aria-hidden="true" />
                     <span>romancaseres929@gmail.com</span>
                 </a>
             </div>
 
             <div className="flex gap-6 pt-8 border-t border-gray-800">
-                <a href="mailto:romancaseres929@gmail.com" className="contact-item text-gray-400 hover:text-white transition-colors">
-                    <Mail className="w-5 h-5" />
+                <a href="mailto:romancaseres929@gmail.com" aria-label="Email" className="contact-item text-gray-400 hover:text-white transition-colors">
+                    <Mail className="w-5 h-5" aria-hidden="true" />
                 </a>
-                <a href="#" className="contact-item text-gray-400 hover:text-white transition-colors">
-                    <Github className="w-5 h-5" />
+                <a href="#" aria-label="GitHub profile" className="contact-item text-gray-400 hover:text-white transition-colors">
+                    <Github className="w-5 h-5" aria-hidden="true" />
                 </a>
-                <a href="#" className="contact-item text-gray-400 hover:text-white transition-colors">
-                    <Linkedin className="w-5 h-5" />
+                <a href="#" aria-label="LinkedIn profile" className="contact-item text-gray-400 hover:text-white transition-colors">
+                    <Linkedin className="w-5 h-5" aria-hidden="true" />
                 </a>
-                <a href="#" className="contact-item text-gray-400 hover:text-white transition-colors">
-                    <Twitter className="w-5 h-5" />
+                <a href="#" aria-label="Twitter profile" className="contact-item text-gray-400 hover:text-white transition-colors">
+                    <Twitter className="w-5 h-5" aria-hidden="true" />
                 </a>
             </div>
         </section>

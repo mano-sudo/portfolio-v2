@@ -63,7 +63,7 @@ export default function Testimonials() {
     return (
         <section ref={sectionRef} className="testimonials-section max-w-4xl mx-auto px-6 py-20">
             <div className="mb-12">
-                <span className="text-sm text-gray-500 uppercase tracking-wider">Testimonials</span>
+                <span className="text-sm text-gray-300 uppercase tracking-wider">Testimonials</span>
                 <h2 className="text-4xl md:text-5xl font-bold mt-2 mb-4">What People Say</h2>
                 <p className="text-gray-400 text-lg">
                     What colleagues and clients say about working with me.
@@ -87,7 +87,7 @@ export default function Testimonials() {
                                 <div>
                                     <h4 className="font-semibold text-white">{testimonial.name}</h4>
                                     <p className="text-sm text-gray-400">{testimonial.role}</p>
-                                    <p className="text-xs text-gray-500">{testimonial.company}</p>
+                                    <p className="text-xs text-gray-300">{testimonial.company}</p>
                                 </div>
                             </div>
 

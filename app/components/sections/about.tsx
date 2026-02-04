@@ -27,7 +27,7 @@ export default function About() {
     return (
         <section ref={sectionRef} className="about-section max-w-3xl mx-auto px-6 py-20">
             <div className="mb-12">
-                <span className="text-sm text-gray-500 uppercase tracking-wider">About</span>
+                <span className="text-sm text-gray-300 uppercase tracking-wider">About</span>
                 <h2 className="text-4xl md:text-5xl font-bold mt-2 mb-8">Who I Am</h2>
             </div>
             

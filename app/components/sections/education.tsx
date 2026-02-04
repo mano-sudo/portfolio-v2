@@ -70,7 +70,7 @@ export default function Education() {
     return (
         <section ref={sectionRef} className="education-section max-w-3xl mx-auto px-6 py-20">
             <div className="mb-12">
-                <span className="text-sm text-gray-500 uppercase tracking-wider">Education</span>
+                <span className="text-sm text-gray-300 uppercase tracking-wider">Education</span>
                 <h2 className="text-4xl md:text-5xl font-bold mt-2 mb-4">Education & Certifications</h2>
                 <p className="text-gray-400 text-lg">
                     Academic background and professional certifications that shape my expertise.
@@ -81,7 +81,7 @@ export default function Education() {
                 {education.map((edu, index) => (
                     <article key={index} className="education-item border-l-2 border-gray-800 pl-8">
                         <div className="mb-4">
-                            <span className="text-xs text-gray-500 uppercase tracking-wider">{edu.period}</span>
+                            <span className="text-xs text-gray-300 uppercase tracking-wider">{edu.period}</span>
                             <h3 className="text-2xl font-bold mt-2 mb-1">{edu.degree}</h3>
                             <p className="text-purple-400 mb-3">{edu.institution}</p>
                         </div>
