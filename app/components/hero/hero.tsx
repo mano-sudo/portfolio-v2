@@ -1,28 +1,63 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 export default function Hero() {
+    const [currentTime, setCurrentTime] = useState("");
+
+    useEffect(() => {
+        const update = () => {
+            const now = new Date();
+            const h = now.getHours().toString().padStart(2, "0");
+            const m = now.getMinutes().toString().padStart(2, "0");
+            const s = now.getSeconds().toString().padStart(2, "0");
+            setCurrentTime(`${h}:${m}:${s}`);
+        };
+        update();
+        const id = setInterval(update, 1000);
+        return () => clearInterval(id);
+    }, []);
+
     return (
-        <section className="w-full min-h-screen flex items-center py-8 sm:py-12 md:py-16 lg:py-20 overflow-x-hidden">
+        <section className="w-full min-h-screen flex items-center py-8 sm:py-12 md:py-16 lg:py-20 overflow-x-hidden relative">
+
+            {/* ── Decorative grid dots (top-right) ── */}
+            <div className="hidden lg:block absolute top-20 right-12 xl:right-20 opacity-20 pointer-events-none">
+                <div className="grid grid-cols-5 gap-4">
+                    {Array.from({ length: 25 }).map((_, i) => (
+                        <div key={i} className="w-1 h-1 rounded-full bg-white" />
+                    ))}
+                </div>
+            </div>
+
+            {/* ── Vertical line accent (left) ── */}
+            <div className="hidden md:block absolute left-6 lg:left-10 top-1/4 h-32 w-px bg-gradient-to-b from-transparent via-white/20 to-transparent pointer-events-none" />
+
+            {/* ── Corner brackets (bottom-left) ── */}
+            <div className="hidden lg:block absolute bottom-16 left-12 lg:left-20 pointer-events-none opacity-20">
+                <div className="w-12 h-12 border-l border-b border-white" />
+            </div>
+
+            {/* ── Corner brackets (top-right) ── */}
+            <div className="hidden lg:block absolute top-16 right-[45%] pointer-events-none opacity-10">
+                <div className="w-8 h-8 border-r border-t border-white" />
+            </div>
+
+            {/* ── Main content ── */}
             <div className="w-full px-4 sm:px-6 md:pl-12 lg:pl-20 max-w-[1920px] mx-auto relative">
                 <div className="flex flex-col space-y-1 sm:space-y-2 md:space-y-3 lg:space-y-4">
+                    {/* FULL */}
                     <div className="group relative inline-block overflow-hidden px-4 sm:px-6 md:px-8">
-                        {/* reveal panel (opens to the right) */}
                         <div className="pointer-events-none absolute inset-0 origin-left scale-x-0 opacity-0 transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100 group-hover:opacity-100 will-change-[transform,opacity]">
                             <div className="absolute inset-0 bg-white/10" />
                             <div className="absolute inset-0 bg-linear-to-r from-white/0 via-white/20 to-white/0" />
-                            {/* leading edge */}
                             <div className="absolute right-0 top-0 h-full w-px bg-white/60" />
                         </div>
-                        {/* subtle top shine */}
                         <div className="pointer-events-none absolute left-0 top-0 h-px w-full bg-linear-to-r from-transparent via-white/35 to-transparent opacity-0 transition-opacity duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-100" />
-
-                        {/* lightweight glow (small area, cheaper than huge blur-3xl) */}
                         <div className="pointer-events-none absolute -inset-2 sm:-inset-3 md:-inset-4 opacity-0 transition-opacity duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-100 will-change-[opacity]">
                             <div className="absolute inset-0 rounded-md bg-white/10 blur-xl" />
                         </div>
-
                         <div className="relative text-[clamp(3.5rem,11vw,12rem)] font-black uppercase leading-[0.9] sm:leading-none select-none transition-[letter-spacing,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1 sm:group-hover:translate-x-2 md:group-hover:translate-x-3 group-hover:tracking-[0.03em] sm:group-hover:tracking-[0.04em] md:group-hover:tracking-[0.06em] will-change-transform">
-                            {/* outline layer - visible by default for extra visibility */}
                             <span
                                 className="absolute inset-0 opacity-30 transition-opacity duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-0"
                                 style={{
@@ -33,30 +68,24 @@ export default function Hero() {
                             >
                                 FULL
                             </span>
-                            {/* solid layer - visible by default */}
                             <span className="opacity-100 transition-opacity duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] text-white">
                                 FULL
                             </span>
                         </div>
                     </div>
+
+                    {/* STACK */}
                     <div className="group relative inline-block overflow-hidden px-4 sm:px-6 md:px-8">
-                        {/* reveal panel (opens to the right) */}
                         <div className="pointer-events-none absolute inset-0 origin-left scale-x-0 opacity-0 transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100 group-hover:opacity-100 will-change-[transform,opacity]">
                             <div className="absolute inset-0 bg-white/10" />
                             <div className="absolute inset-0 bg-linear-to-r from-white/0 via-white/20 to-white/0" />
-                            {/* leading edge */}
                             <div className="absolute right-0 top-0 h-full w-px bg-white/60" />
                         </div>
-                        {/* subtle top shine */}
                         <div className="pointer-events-none absolute left-0 top-0 h-px w-full bg-linear-to-r from-transparent via-white/35 to-transparent opacity-0 transition-opacity duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-100" />
-
-                        {/* lightweight glow (small area, cheaper than huge blur-3xl) */}
                         <div className="pointer-events-none absolute -inset-2 sm:-inset-3 md:-inset-4 opacity-0 transition-opacity duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-100 will-change-[opacity]">
                             <div className="absolute inset-0 rounded-md bg-white/10 blur-xl" />
                         </div>
-
                         <div className="relative text-[clamp(3.5rem,11vw,12rem)] font-black uppercase leading-[0.9] sm:leading-none select-none transition-[letter-spacing,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1 sm:group-hover:translate-x-2 md:group-hover:translate-x-3 group-hover:tracking-[0.03em] sm:group-hover:tracking-[0.04em] md:group-hover:tracking-[0.06em] will-change-transform">
-                            {/* outline layer - visible by default for extra visibility */}
                             <span
                                 className="absolute inset-0 opacity-30 transition-opacity duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-0"
                                 style={{
@@ -67,33 +96,35 @@ export default function Hero() {
                             >
                                 STACK
                             </span>
-                            {/* solid layer - visible by default */}
                             <span className="opacity-100 transition-opacity duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] text-white">
                                 STACK
                             </span>
                         </div>
                     </div>
+
+                    {/* Code snippet (desktop) */}
                     <div className="hidden xl:block absolute xl:top-[calc((3.5rem*0.9)_+_0.25rem_+_3.5rem_+_0.25rem)] xl:right-20 font-mono text-sm leading-relaxed">
-                        <div className="text-purple-400">const <span className="text-blue-400">identity</span> = &#123;</div>
-                        <div className="pl-4 text-gray-300">
-                            name: <span className="text-emerald-400">"Roman Caseres"</span>,
+                        <div className="text-white/50">const <span className="text-white/70">identity</span> = &#123;</div>
+                        <div className="pl-4 text-white/40">
+                            name: <span className="text-white/60">&quot;Roman Caseres&quot;</span>,
                         </div>
-                        <div className="text-purple-400">&#125;;</div>
-
-                        <div className="mt-2 text-purple-400">
-                            const <span className="text-blue-400">stack</span> = &#123;
+                        <div className="text-white/50">&#125;;</div>
+                        <div className="mt-2 text-white/50">
+                            const <span className="text-white/70">stack</span> = &#123;
                         </div>
-                        <div className="pl-4 text-gray-300">
-                            frontend: <span className="text-amber-400">["React", "TypeScript", "Tailwind"]</span>,
+                        <div className="pl-4 text-white/40">
+                            frontend: <span className="text-white/60">[&quot;React&quot;, &quot;TypeScript&quot;, &quot;Tailwind&quot;]</span>,
                         </div>
-                        <div className="pl-4 text-gray-300">
-                            backend: <span className="text-amber-400">["Laravel", "PHP", "MySQL"]</span>,
+                        <div className="pl-4 text-white/40">
+                            backend: <span className="text-white/60">[&quot;Laravel&quot;, &quot;PHP&quot;, &quot;MySQL&quot;]</span>,
                         </div>
-                        <div className="pl-4 text-gray-300">
-                            tools: <span className="text-amber-400">["Git", "Vite", "Figma"]</span>,
+                        <div className="pl-4 text-white/40">
+                            tools: <span className="text-white/60">[&quot;Git&quot;, &quot;Vite&quot;, &quot;Figma&quot;]</span>,
                         </div>
-                        <div className="text-purple-400">&#125;;</div>
+                        <div className="text-white/50">&#125;;</div>
                     </div>
+
+                    {/* DEVELOPER */}
                     <h1 className="text-[clamp(2.5rem,9vw,12rem)] font-black uppercase leading-[0.9] sm:leading-none text-gray-400 px-4 sm:px-6 md:px-8">
                         <span className="sr-only">Full Stack </span>DEVELOPER
                     </h1>
@@ -123,8 +154,36 @@ export default function Hero() {
                         </div>
                     </div>
                 </div>
-
             </div>
+
+            {/* ── Bottom bar with metadata ── */}
+            <div className="absolute bottom-6 sm:bottom-8 left-0 right-0 px-4 sm:px-6 md:px-12 lg:px-20 flex items-center justify-between pointer-events-none">
+                {/* Available badge */}
+                <div className="flex items-center gap-2">
+                    <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+                    </span>
+                    <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-white/40 font-medium">Available for work</span>
+                </div>
+
+                {/* Live clock */}
+                <div className="hidden sm:flex items-center gap-3 text-white/30 font-mono text-xs tracking-wider">
+                    <span>LOCAL</span>
+                    <span className="text-white/50">{currentTime}</span>
+                </div>
+
+                {/* Scroll indicator */}
+                <div className="flex items-center gap-2 text-white/30">
+                    <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] font-medium">Scroll</span>
+                    <div className="w-5 h-8 rounded-full border border-white/20 flex items-start justify-center p-1">
+                        <div className="w-0.5 h-2 bg-white/40 rounded-full animate-bounce" />
+                    </div>
+                </div>
+            </div>
+
+            {/* ── Horizontal divider at very bottom ── */}
+            <div className="absolute bottom-0 left-4 sm:left-6 md:left-12 lg:left-20 right-4 sm:right-6 md:right-12 lg:right-20 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
         </section>
     );
 }
