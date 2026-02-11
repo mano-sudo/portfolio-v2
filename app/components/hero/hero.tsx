@@ -2,7 +2,7 @@
 
 export default function Hero() {
     return (
-        <section className="w-full min-h-screen flex items-center py-8 sm:py-12 md:py-16 lg:py-20">
+        <section className="w-full min-h-screen flex items-center py-8 sm:py-12 md:py-16 lg:py-20 overflow-x-hidden">
             <div className="w-full px-4 sm:px-6 md:pl-12 lg:pl-20 max-w-[1920px] mx-auto relative">
                 <div className="flex flex-col space-y-1 sm:space-y-2 md:space-y-3 lg:space-y-4">
                     <div className="group relative inline-block overflow-hidden px-4 sm:px-6 md:px-8">
