@@ -8,6 +8,7 @@ export default function AppNavbar() {
     const pathname = usePathname();
     const [currentTime, setCurrentTime] = useState("");
     const [menuOpen, setMenuOpen] = useState(false);
+    const [navHidden, setNavHidden] = useState(false);
 
     useEffect(() => {
         const updateTime = () => {
@@ -37,6 +38,26 @@ export default function AppNavbar() {
         return () => { document.body.style.overflow = ""; };
     }, [menuOpen]);
 
+    // Hide navbar on scroll down, show on scroll up
+    useEffect(() => {
+        let lastY = window.scrollY;
+
+        const onScroll = () => {
+            const currentY = window.scrollY;
+            if (menuOpen) return; // don't hide while overlay is open
+
+            if (currentY > lastY && currentY > 80) {
+                setNavHidden(true);
+            } else if (currentY < lastY) {
+                setNavHidden(false);
+            }
+            lastY = currentY;
+        };
+
+        window.addEventListener("scroll", onScroll, { passive: true });
+        return () => window.removeEventListener("scroll", onScroll);
+    }, [menuOpen]);
+
     const navItems = [
         { name: "ABOUT", href: "/" },
         { name: "PROJECTS", href: "/projects" },
@@ -45,7 +66,7 @@ export default function AppNavbar() {
 
     return (
         <>
-            <nav className="fixed top-0 w-full z-50 flex justify-between items-center p-6 px-8 md:px-12 lg:px-20">
+            <nav className={`fixed top-0 w-full z-50 flex justify-between items-center p-6 px-8 md:px-12 lg:px-20 transition-transform duration-300 bg-black/80 backdrop-blur-md lg:bg-transparent lg:backdrop-blur-none ${navHidden && !menuOpen ? "-translate-y-full" : "translate-y-0"}`}>
                 {/* Left - Dashboard */}
                 <div className="text-white uppercase tracking-wider text-xs md:text-sm font-medium">
                     DASHBOARD
