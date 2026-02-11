@@ -35,10 +35,10 @@ export default function Stats() {
                 scrollTrigger: {
                     trigger: ".reveal-wrapper",
                     start: "top top",
-                    // Significantly shorter scroll distance on mobile
-                    end: () => window.innerWidth < 768 ? "+=20%" : "+=250%",
+                    // Increased scroll distance on mobile for better smoothness
+                    end: () => window.innerWidth < 768 ? "+=150%" : "+=250%",
                     pin: true,
-                    scrub: 0.8,
+                    scrub: typeof window !== "undefined" && window.innerWidth < 768 ? 1.5 : 0.8,
                 }
             });
 
@@ -141,7 +141,7 @@ export default function Stats() {
                             {leftLetters.map((char, i) => (
                                 <span
                                     key={`l-${i}`}
-                                    className="reveal-letter book-left inline-block text-[clamp(3rem,12vw,10rem)] font-black uppercase text-white select-none"
+                                    className="reveal-letter book-left inline-block text-[clamp(2.5rem,10vw,10rem)] font-black uppercase text-white select-none"
                                     style={{ transformOrigin: "right center" }}
                                 >
                                     {char === " " ? "\u00A0" : char}
@@ -151,7 +151,7 @@ export default function Stats() {
                             {rightLetters.map((char, i) => (
                                 <span
                                     key={`r-${i}`}
-                                    className="reveal-letter book-right inline-block text-[clamp(3rem,12vw,10rem)] font-black uppercase text-white select-none"
+                                    className="reveal-letter book-right inline-block text-[clamp(2.5rem,10vw,10rem)] font-black uppercase text-white select-none"
                                     style={{ transformOrigin: "left center" }}
                                 >
                                     {char === " " ? "\u00A0" : char}
@@ -163,11 +163,11 @@ export default function Stats() {
                     {/* Stats content (hidden initially, revealed after book opens) */}
                     <div className="stats-content absolute inset-0 flex items-center opacity-0 z-20">
                         <section className="w-full px-4 sm:px-6 md:px-12 lg:px-20 xl:px-32 2xl:px-44 max-w-[1920px] mx-auto">
-                            <div className="flex flex-col lg:flex-row gap-12 md:gap-16 lg:gap-20 items-start">
+                            <div className="flex flex-col lg:flex-row gap-8 md:gap-16 lg:gap-20 items-start">
                                 {/* Left — Who I Am */}
                                 <div className="about-text w-full lg:w-5/12 space-y-6">
                                     <span className="text-xs uppercase tracking-[0.3em] text-white/40 font-medium">About</span>
-                                    <h2 className="text-[clamp(2.5rem,5vw,5rem)] font-black uppercase leading-[0.95] text-white">
+                                    <h2 className="text-[clamp(2rem,5vw,5rem)] font-black uppercase leading-[0.95] text-white">
                                         Who I Am
                                     </h2>
                                     <p className="text-base sm:text-lg text-white/50 leading-relaxed max-w-lg">
