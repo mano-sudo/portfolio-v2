@@ -11,45 +11,80 @@ if (typeof window !== "undefined") {
 export default function Marquee() {
     const sectionRef = useRef<HTMLDivElement>(null);
     const trackRef = useRef<HTMLDivElement>(null);
+    const mobileRow1Ref = useRef<HTMLDivElement>(null);
+    const mobileRow2Ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (!sectionRef.current || !trackRef.current) return;
+        if (!sectionRef.current) return;
 
         const ctx = gsap.context(() => {
-            const track = trackRef.current!;
-            
-            // Re-calculate everything on refresh for full responsiveness
-            const calculateValues = () => {
-                // Start with text peeking from the right (only "Web" or part of it visible)
-                const startX = window.innerWidth * 0.85;
-                const endX = window.innerWidth - track.scrollWidth;
-                return { startX, endX };
-            };
+            const isMobile = window.innerWidth < 768;
 
-            let { startX, endX } = calculateValues();
-
-            gsap.fromTo(track, 
-                { x: startX },
-                {
-                    x: endX,
+            if (isMobile) {
+                // MOBILE STYLE: Split rows moving in opposite directions (Parallax)
+                // No heavy pinning, just scroll-triggered movement
+                gsap.to(mobileRow1Ref.current, {
+                    x: -100,
                     ease: "none",
                     scrollTrigger: {
                         trigger: sectionRef.current,
-                        start: "top top",
-                        // Make scroll duration proportional to content length
-                        end: () => `+=${Math.abs(startX - endX) * (window.innerWidth < 768 ? 0.6 : 1)}`,
-                        pin: true,
-                        scrub: 1, // Smoother scrub
-                        invalidateOnRefresh: true,
-                        onRefresh: (self) => {
-                            // Update values on window resize
-                            const vals = calculateValues();
-                            startX = vals.startX;
-                            endX = vals.endX;
-                        }
-                    },
-                }
-            );
+                        start: "top bottom",
+                        end: "bottom top",
+                        scrub: true
+                    }
+                });
+
+                gsap.to(mobileRow2Ref.current, {
+                    x: 100,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: sectionRef.current,
+                        start: "top bottom",
+                        end: "bottom top",
+                        scrub: true
+                    }
+                });
+
+                // Services fade in
+                gsap.from(".mobile-service-item", {
+                    opacity: 0,
+                    y: 20,
+                    stagger: 0.1,
+                    duration: 0.8,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: ".mobile-services-grid",
+                        start: "top 85%",
+                    }
+                });
+
+            } else {
+                // DESKTOP STYLE: The classic horizontal pin scroll
+                const track = trackRef.current!;
+                const calculateValues = () => {
+                    const startX = window.innerWidth - 350;
+                    const endX = -(track.scrollWidth - window.innerWidth);
+                    return { startX, endX };
+                };
+
+                let { startX, endX } = calculateValues();
+
+                gsap.fromTo(track, 
+                    { x: startX },
+                    {
+                        x: endX,
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: sectionRef.current,
+                            start: "top top",
+                            end: () => `+=${Math.abs(startX - endX) * 1.5}`,
+                            pin: true,
+                            scrub: 0.5,
+                            invalidateOnRefresh: true,
+                        },
+                    }
+                );
+            }
         }, sectionRef);
 
         return () => ctx.revert();
@@ -58,37 +93,74 @@ export default function Marquee() {
     return (
         <section
             ref={sectionRef}
-            className="relative overflow-hidden bg-black"
+            className="relative overflow-hidden bg-black py-20 md:py-0 md:h-screen"
         >
-            {/* Smooth gradient masks for the edges to make it look premium */}
-            <div className="absolute inset-y-0 left-0 w-12 sm:w-32 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none hidden md:block" />
-            <div className="absolute inset-y-0 right-0 w-12 sm:w-32 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none hidden md:block" />
-
-            {/* Marquee container - Variable height for mobile/desktop */}
-            <div className="h-[35vh] md:h-[60vh] flex items-center justify-center">
+            {/* DESKTOP VIEW */}
+            <div className="hidden md:flex h-full items-center justify-start overflow-visible">
+                <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
+                <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
+                
                 <div
                     ref={trackRef}
-                    className="flex items-center whitespace-nowrap will-change-transform px-4 md:px-0"
+                    className="flex items-center whitespace-nowrap will-change-transform"
                 >
-                    <span className="text-[clamp(3.5rem,14vw,18rem)] font-black text-white leading-none tracking-tighter select-none">
+                    <span className="text-[clamp(10rem,15vw,18rem)] font-black text-white leading-none tracking-tighter select-none">
                         Web Dev
                     </span>
-                    <span className="text-[clamp(1.5rem,6vw,6rem)] text-white/20 mx-4 sm:mx-10 md:mx-16 select-none font-light italic">
+                    <span className="text-[clamp(4rem,6vw,6rem)] text-white/20 mx-16 select-none font-light italic">
                         &
                     </span>
-                    <span className="text-[clamp(3.5rem,14vw,18rem)] font-black text-white leading-none tracking-tighter select-none">
+                    <span className="text-[clamp(10rem,15vw,18rem)] font-black text-white leading-none tracking-tighter select-none">
                         App Dev
                     </span>
 
-                    {/* Services list at the end - Responsive padding and font */}
-                    <div className="ml-10 sm:ml-20 md:ml-32 pr-10 sm:pr-20 md:pr-40 flex flex-col gap-1 md:gap-2">
-                        <span className="text-[10px] sm:text-xs md:text-base text-white/40 font-mono uppercase tracking-[0.2em]">Services</span>
-                        <div className="h-px w-8 bg-white/20 mb-1 md:mb-2" />
-                        <span className="text-xs sm:text-base md:text-xl text-white/70 font-bold uppercase tracking-tight">Frontend Development</span>
-                        <span className="text-xs sm:text-base md:text-xl text-white/70 font-bold uppercase tracking-tight">Backend Systems</span>
-                        <span className="text-xs sm:text-base md:text-xl text-white/70 font-bold uppercase tracking-tight">Responsive Design</span>
-                        <span className="text-xs sm:text-base md:text-xl text-white/70 font-bold uppercase tracking-tight">API Integration</span>
+                    <div className="ml-32 pr-40 flex flex-col gap-2">
+                        <span className="text-base text-white/40 font-mono uppercase tracking-[0.2em]">Services</span>
+                        <div className="h-px w-8 bg-white/20 mb-2" />
+                        <span className="text-xl text-white/70 font-bold uppercase tracking-tight">Frontend Development</span>
+                        <span className="text-xl text-white/70 font-bold uppercase tracking-tight">Backend Systems</span>
+                        <span className="text-xl text-white/70 font-bold uppercase tracking-tight">Responsive Design</span>
+                        <span className="text-xl text-white/70 font-bold uppercase tracking-tight">API Integration</span>
                     </div>
+                </div>
+            </div>
+
+            {/* MOBILE VIEW - Redesigned for vertical screens */}
+            <div className="md:hidden px-6 flex flex-col gap-12">
+                <div className="space-y-2">
+                    <div ref={mobileRow1Ref} className="whitespace-nowrap translate-x-12">
+                        <span className="text-7xl font-black text-white uppercase leading-none tracking-tighter">
+                            Web Dev
+                        </span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <div className="h-px flex-1 bg-white/10" />
+                        <span className="text-3xl font-light italic text-white/30">&</span>
+                        <div className="h-px flex-1 bg-white/10" />
+                    </div>
+                    <div ref={mobileRow2Ref} className="whitespace-nowrap -translate-x-12 flex justify-end">
+                        <span className="text-7xl font-black text-white uppercase leading-none tracking-tighter">
+                            App Dev
+                        </span>
+                    </div>
+                </div>
+
+                <div className="mobile-services-grid grid grid-cols-1 gap-4 pt-8">
+                    <span className="text-[10px] text-white/30 font-mono uppercase tracking-[0.3em] mb-2">Expertise</span>
+                    {[
+                        "Frontend Development",
+                        "Backend Systems",
+                        "Responsive Design",
+                        "API Integration",
+                        "Database Architecture"
+                    ].map((service, i) => (
+                        <div key={i} className="mobile-service-item flex items-center gap-3">
+                            <div className="w-1.5 h-1.5 rounded-full bg-white/20" />
+                            <span className="text-lg text-white/60 font-medium tracking-tight whitespace-nowrap overflow-hidden text-ellipsis">
+                                {service}
+                            </span>
+                        </div>
+                    ))}
                 </div>
             </div>
         </section>

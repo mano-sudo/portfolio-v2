@@ -35,7 +35,8 @@ export default function Stats() {
                 scrollTrigger: {
                     trigger: ".reveal-wrapper",
                     start: "top top",
-                    end: "+=250%",
+                    // Significantly shorter scroll distance on mobile
+                    end: () => window.innerWidth < 768 ? "+=20%" : "+=250%",
                     pin: true,
                     scrub: 0.8,
                 }
