@@ -1,5 +1,6 @@
 import Hero from "./components/hero/hero";
 import Stats from "./components/sections/stats";
+import Marquee from "./components/sections/marquee";
 import Experience from "./components/sections/experience";
 import Projects from "./components/sections/projects";
 import Skills from "./components/sections/skills";
@@ -19,6 +20,8 @@ export default function Home() {
       <FloatingSocials />
       <Hero />
       <Stats />
+     
+      <Marquee />
       <Experience />
       <Projects />
       <Skills />
