@@ -1,8 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+    gsap.registerPlugin(ScrollTrigger);
+}
 
 export default function Hero() {
+    const sectionRef = useRef<HTMLDivElement>(null);
     const [currentTime, setCurrentTime] = useState("");
 
     useEffect(() => {
@@ -18,11 +25,69 @@ export default function Hero() {
         return () => clearInterval(id);
     }, []);
 
+    useEffect(() => {
+        if (!sectionRef.current) return;
+
+        const ctx = gsap.context(() => {
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: sectionRef.current,
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: 0.5,
+                }
+            });
+
+            // Main text slides up + fades
+            tl.to(".hero-text-block", {
+                y: -80,
+                opacity: 0.3,
+                duration: 1,
+                ease: "none"
+            }, 0);
+
+            // Code snippet (desktop) — folds up and fades
+            tl.to(".hero-code-snippet", {
+                y: -60,
+                opacity: 0,
+                scale: 0.9,
+                duration: 1,
+                ease: "none"
+            }, 0);
+
+            // Mobile description — slides up and fades
+            tl.to(".hero-mobile-desc", {
+                y: -50,
+                opacity: 0,
+                duration: 1,
+                ease: "none"
+            }, 0);
+
+            // Bottom bar fades out
+            tl.to(".hero-bottom-bar", {
+                opacity: 0,
+                y: 20,
+                duration: 0.6,
+                ease: "none"
+            }, 0);
+
+            // Decorative elements fade
+            tl.to(".hero-decor", {
+                opacity: 0,
+                duration: 0.6,
+                ease: "none"
+            }, 0);
+
+        }, sectionRef);
+
+        return () => ctx.revert();
+    }, []);
+
     return (
-        <section className="w-full h-[100dvh] md:min-h-screen flex items-center py-8 sm:py-12 md:py-16 lg:py-20 overflow-x-hidden relative">
+        <section ref={sectionRef} className="w-full h-[100dvh] md:min-h-screen flex items-center py-8 sm:py-12 md:py-16 lg:py-20 overflow-x-hidden relative">
 
             {/* ── Decorative grid dots (top-right) ── */}
-            <div className="hidden lg:block absolute top-20 right-12 xl:right-20 opacity-20 pointer-events-none">
+            <div className="hero-decor hidden lg:block absolute top-20 right-12 xl:right-20 opacity-20 pointer-events-none">
                 <div className="grid grid-cols-5 gap-4">
                     {Array.from({ length: 25 }).map((_, i) => (
                         <div key={i} className="w-1 h-1 rounded-full bg-white" />
@@ -31,15 +96,15 @@ export default function Hero() {
             </div>
 
             {/* ── Vertical line accent (left) ── */}
-            <div className="hidden md:block absolute left-6 lg:left-10 top-1/4 h-32 w-px bg-gradient-to-b from-transparent via-white/20 to-transparent pointer-events-none" />
+            <div className="hero-decor hidden md:block absolute left-6 lg:left-10 top-1/4 h-32 w-px bg-gradient-to-b from-transparent via-white/20 to-transparent pointer-events-none" />
 
             {/* ── Corner brackets (bottom-left) ── */}
-            <div className="hidden lg:block absolute bottom-16 left-12 lg:left-20 pointer-events-none opacity-20">
+            <div className="hero-decor hidden lg:block absolute bottom-16 left-12 lg:left-20 pointer-events-none opacity-20">
                 <div className="w-12 h-12 border-l border-b border-white" />
             </div>
 
             {/* ── Corner brackets (top-right) ── */}
-            <div className="hidden lg:block absolute top-16 right-[45%] pointer-events-none opacity-10">
+            <div className="hero-decor hidden lg:block absolute top-16 right-[45%] pointer-events-none opacity-10">
                 <div className="w-8 h-8 border-r border-t border-white" />
             </div>
 
@@ -47,7 +112,7 @@ export default function Hero() {
             <div className="w-full px-4 sm:px-6 md:pl-12 lg:pl-20 max-w-[1920px] mx-auto relative">
                 <div className="flex flex-col space-y-1 sm:space-y-2 md:space-y-3 lg:space-y-4">
                     {/* FULL */}
-                    <div className="group relative inline-block overflow-hidden px-4 sm:px-6 md:px-8">
+                    <div className="hero-text-block group relative inline-block overflow-hidden px-4 sm:px-6 md:px-8">
                         <div className="pointer-events-none absolute inset-0 origin-left scale-x-0 opacity-0 transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100 group-hover:opacity-100 will-change-[transform,opacity]">
                             <div className="absolute inset-0 bg-white/10" />
                             <div className="absolute inset-0 bg-linear-to-r from-white/0 via-white/20 to-white/0" />
@@ -75,7 +140,7 @@ export default function Hero() {
                     </div>
 
                     {/* STACK */}
-                    <div className="group relative inline-block overflow-hidden px-4 sm:px-6 md:px-8">
+                    <div className="hero-text-block group relative inline-block overflow-hidden px-4 sm:px-6 md:px-8">
                         <div className="pointer-events-none absolute inset-0 origin-left scale-x-0 opacity-0 transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100 group-hover:opacity-100 will-change-[transform,opacity]">
                             <div className="absolute inset-0 bg-white/10" />
                             <div className="absolute inset-0 bg-linear-to-r from-white/0 via-white/20 to-white/0" />
@@ -103,7 +168,7 @@ export default function Hero() {
                     </div>
 
                     {/* Code snippet (desktop) */}
-                    <div className="hidden xl:block absolute xl:top-[calc((3.5rem*0.9)_+_0.25rem_+_3.5rem_+_0.25rem)] xl:right-20 font-mono text-sm leading-relaxed">
+                    <div className="hero-code-snippet hidden xl:block absolute xl:top-[calc((3.5rem*0.9)_+_0.25rem_+_3.5rem_+_0.25rem)] xl:right-20 font-mono text-sm leading-relaxed">
                         <div className="text-white/50">const <span className="text-white/70">identity</span> = &#123;</div>
                         <div className="pl-4 text-white/40">
                             name: <span className="text-white/60">&quot;Roman Caseres&quot;</span>,
@@ -125,12 +190,12 @@ export default function Hero() {
                     </div>
 
                     {/* DEVELOPER */}
-                    <h1 className="text-[clamp(2.5rem,9vw,12rem)] font-black uppercase leading-[0.9] sm:leading-none text-gray-400 px-4 sm:px-6 md:px-8">
+                    <h1 className="hero-text-block text-[clamp(2.5rem,9vw,12rem)] font-black uppercase leading-[0.9] sm:leading-none text-gray-400 px-4 sm:px-6 md:px-8">
                         <span className="sr-only">Full Stack </span>DEVELOPER
                     </h1>
 
                     {/* Description & CTA — visible only when code snippet is hidden */}
-                    <div className="xl:hidden mt-6 sm:mt-8 px-4 sm:px-6 md:px-8 space-y-6">
+                    <div className="hero-mobile-desc xl:hidden mt-6 sm:mt-8 px-4 sm:px-6 md:px-8 space-y-6">
                         <p className="text-gray-400 text-base sm:text-lg md:text-xl max-w-xl leading-relaxed">
                             Passionate full-stack developer crafting modern, performant, and visually stunning web experiences from concept to deployment.
                         </p>
@@ -157,7 +222,7 @@ export default function Hero() {
             </div>
 
             {/* ── Bottom bar with metadata ── */}
-            <div className="absolute bottom-6 sm:bottom-8 left-0 right-0 px-4 sm:px-6 md:px-12 lg:px-20 flex items-center justify-between pointer-events-none">
+            <div className="hero-bottom-bar absolute bottom-6 sm:bottom-8 left-0 right-0 px-4 sm:px-6 md:px-12 lg:px-20 flex items-center justify-between pointer-events-none">
                 {/* Available badge */}
                 <div className="flex items-center gap-2">
                     <span className="relative flex h-2 w-2">
@@ -183,7 +248,7 @@ export default function Hero() {
             </div>
 
             {/* ── Horizontal divider at very bottom ── */}
-            <div className="absolute bottom-0 left-4 sm:left-6 md:left-12 lg:left-20 right-4 sm:right-6 md:right-12 lg:right-20 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+            <div className="hero-decor absolute bottom-0 left-4 sm:left-6 md:left-12 lg:left-20 right-4 sm:right-6 md:right-12 lg:right-20 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
         </section>
     );
 }
