@@ -19,7 +19,7 @@ export default function Hero() {
     }, []);
 
     return (
-        <section className="w-full h-screen md:min-h-screen flex items-center py-8 sm:py-12 md:py-16 lg:py-20 overflow-x-hidden relative">
+        <section className="w-full h-[100dvh] md:min-h-screen flex items-center py-8 sm:py-12 md:py-16 lg:py-20 overflow-x-hidden relative">
 
             {/* ── Decorative grid dots (top-right) ── */}
             <div className="hidden lg:block absolute top-20 right-12 xl:right-20 opacity-20 pointer-events-none">
