@@ -3,7 +3,8 @@
 import { useGSAP } from "@/app/hooks/useGSAP";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Briefcase, Calendar, MapPin } from "lucide-react";
+import { Briefcase, MapPin } from "lucide-react";
+import { useRef } from "react";
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger);
@@ -11,116 +12,216 @@ if (typeof window !== "undefined") {
 
 const experiences = [
     {
-        title: "Senior Full Stack Developer",
-        company: "Tech Innovations Inc.",
-        location: "San Francisco, CA",
-        period: "2022 - Present",
-        description: "Leading development of scalable web applications serving 100K+ users. Architected microservices infrastructure reducing latency by 40%. Mentored team of 5 junior developers.",
+        title: "Junior Developer",
+        company: "SOCIA ph",
+        location: "Philippines",
+        period: "2025 - Present",
+        description: "Contributing to the development of enterprise-grade solutions using modern full-stack architectures. Collaborating with cross-functional teams to deliver high-quality code, optimized database schemas, and scalable microservices.",
         achievements: [
-            "Reduced application load time by 40% through optimization",
-            "Led migration to microservices architecture",
-            "Implemented CI/CD pipelines reducing deployment time by 60%"
+            "Actively contributing to production-level codebases as a Junior Developer",
+            "Working on scalable solutions within the SOCIA ecosystem using Laravel and Next.js",
+            "Collaborating with senior engineers to implement containerized workflows with Docker"
         ],
-        tech: ["React", "Node.js", "TypeScript", "AWS", "Docker", "Kubernetes"]
+        tech: ["React", "TypeScript", "Laravel", "Node", "Next", "Postgres", "Docker", "MySQL"]
     },
     {
-        title: "Full Stack Developer",
-        company: "Digital Solutions LLC",
-        location: "Remote",
-        period: "2020 - 2022",
-        description: "Developed and maintained multiple client-facing applications. Collaborated with cross-functional teams to deliver high-quality software solutions. Implemented responsive designs and optimized performance.",
+        title: "Lead Developer (Innovation Award Winner)",
+        company: "Synergy 2025 Conference",
+        location: "University Tech Showcase",
+        period: "2024 - 2025",
+        description: "Developed an advanced Water Quality Monitoring System using IoT technology. The project features real-time analysis, mobile app integration, and environmental monitoring with 95% data accuracy.",
         achievements: [
-            "Built 10+ production applications",
-            "Improved user engagement by 35%",
-            "Reduced bug reports by 50% through better testing"
+            "Won 'Best Research Paper' at Synergy 2025 Conference",
+            "Developed a cross-platform Flutter app for real-time visualization",
+            "Implemented REST APIs and alert systems using Firebase",
+            "Developed ML algorithms for water quality prediction"
         ],
-        tech: ["Next.js", "PostgreSQL", "MongoDB", "GraphQL", "Redis"]
-    },
-    {
-        title: "Frontend Developer",
-        company: "StartupHub",
-        location: "New York, NY",
-        period: "2019 - 2020",
-        description: "Focused on creating intuitive user interfaces and improving user experience. Worked closely with designers to implement pixel-perfect designs. Optimized frontend performance and accessibility.",
-        achievements: [
-            "Improved page load speed by 50%",
-            "Achieved 95+ Lighthouse score",
-            "Implemented accessibility standards (WCAG 2.1)"
-        ],
-        tech: ["React", "TypeScript", "Tailwind CSS", "GSAP", "Three.js"]
+        tech: ["Flutter", "ESP32", "Firebase", "IoT", "Machine Learning", "REST API"]
     }
 ];
 
 export default function Experience() {
+    const containerRef = useRef<HTMLDivElement>(null);
     const sectionRef = useGSAP(() => {
-        gsap.from(".experience-item", {
+        const isDesktop = window.innerWidth >= 1024;
+
+        // 1. SPLIT ENTRANCE (Title from Left, Content from Right)
+        if (isDesktop) {
+            gsap.from(".experience-side-title", {
+                x: -300,
+                opacity: 0,
+                filter: "blur(15px)",
+                scrollTrigger: {
+                    trigger: sectionRef.current,
+                    start: "top 95%",
+                    end: "top 30%",
+                    scrub: 1,
+                }
+            });
+
+            gsap.from(".experience-content-wrapper", {
+                x: 300,
+                opacity: 0,
+                filter: "blur(15px)",
+                scrollTrigger: {
+                    trigger: sectionRef.current,
+                    start: "top 95%",
+                    end: "top 30%",
+                    scrub: 1,
+                }
+            });
+
+            gsap.from(".experience-divider", {
+                scaleY: 0,
+                opacity: 0,
+                scrollTrigger: {
+                    trigger: sectionRef.current,
+                    start: "top 95%",
+                    end: "top 30%",
+                    scrub: 1,
+                }
+            });
+        }
+
+        // 2. MAIN SCROLL LOGIC
+        const tl = gsap.timeline({
             scrollTrigger: {
-                trigger: ".experience-section",
-                start: "top 80%",
-            },
-            opacity: 0,
-            x: -50,
-            duration: 0.8,
-            stagger: 0.2,
-            ease: "power3.out"
+                trigger: sectionRef.current,
+                start: "top top",
+                end: `+=${experiences.length * 200}%`,
+                pin: true,
+                scrub: 1.2,
+                anticipatePin: 1,
+            }
         });
+
+        if (isDesktop) {
+            // Desktop (Web): Vertical Slide
+            experiences.forEach((_, i) => {
+                if (i > 0) {
+                    tl.to(".experience-sliding-container", {
+                        yPercent: -100 * i,
+                        duration: 1,
+                        ease: "power2.inOut"
+                    });
+                    tl.to({}, { duration: 0.5 });
+                }
+            });
+        } else {
+            // Mobile: Auto-Hide Title & Horizontal Slide
+            // Step 1: Hide Title
+            tl.to(".experience-side-title", {
+                opacity: 0,
+                yPercent: -100,
+                duration: 0.8,
+                ease: "power2.inOut"
+            });
+
+            tl.to(".experience-content-wrapper", {
+                y: "-50px", // Subtle lift
+                duration: 0.8,
+                ease: "power2.inOut"
+            }, 0);
+
+            // Step 2: Slide through roles using xPercent
+            experiences.forEach((_, i) => {
+                if (i > 0) {
+                    tl.to(".experience-sliding-container", {
+                        xPercent: -100 * i,
+                        duration: 1,
+                        ease: "power2.inOut"
+                    });
+                    tl.to({}, { duration: 0.5 });
+                }
+            });
+        }
     }, []);
 
     return (
-        <section ref={sectionRef} className="experience-section max-w-3xl mx-auto px-6 py-20">
-            <div className="mb-12">
-                <span className="text-sm text-gray-300 uppercase tracking-wider">Experience</span>
-                <h2 className="text-4xl md:text-5xl font-bold mt-2 mb-4">Work History</h2>
-                <p className="text-gray-400 text-lg">
-                    A journey through my professional career, highlighting key achievements and technologies I've worked with.
-                </p>
-            </div>
-
-            <div className="space-y-12">
-                {experiences.map((exp, index) => (
-                    <article key={index} className="experience-item border-l-2 border-gray-800 pl-8 pb-12 last:pb-0">
-                        <div className="mb-4">
-                            <span className="text-xs text-gray-300 uppercase tracking-wider">{exp.period}</span>
-                            <h3 className="text-2xl font-bold mt-2 mb-1">{exp.title}</h3>
-                            <div className="flex items-center gap-4 text-gray-400 text-sm mb-4">
-                                <span className="flex items-center gap-1">
-                                    <Briefcase className="w-4 h-4" />
-                                    {exp.company}
-                                </span>
-                                <span className="flex items-center gap-1">
-                                    <MapPin className="w-4 h-4" />
-                                    {exp.location}
-                                </span>
-                            </div>
-                        </div>
-
-                        <p className="text-gray-300 mb-6 leading-relaxed">
-                            {exp.description}
+        <section ref={sectionRef} className="experience-section relative bg-black overflow-hidden">
+            <div className="max-w-[1920px] mx-auto px-6 md:px-12 lg:px-20 xl:px-32 h-full">
+                <div className="flex flex-col lg:flex-row min-h-screen">
+                    
+                    {/* LEFT SIDE — FIXED TITLE */}
+                    <div className="experience-side-title w-full lg:w-1/3 pt-12 lg:pt-0 lg:h-screen lg:flex lg:flex-col lg:justify-center z-20">
+                        <span className="text-[10px] uppercase tracking-[0.3em] font-mono text-white/30 mb-2 lg:mb-4 block">Experience</span>
+                        <h2 className="text-2xl md:text-7xl lg:text-8xl font-black text-white uppercase leading-[0.85] tracking-tighter italic">
+                            Work<br />History
+                        </h2>
+                        <div className="hidden lg:block w-32 h-1 bg-white/10 mt-12 mb-6" />
+                        <p className="hidden lg:block text-white/40 text-lg italic leading-relaxed max-w-xs">
+                            Switching focus from professional roles to academic innovation.
                         </p>
+                    </div>
 
-                        <div className="mb-6">
-                            <h4 className="text-sm font-semibold text-gray-400 mb-3">Key Achievements:</h4>
-                            <ul className="space-y-2">
-                                {exp.achievements.map((achievement, i) => (
-                                    <li key={i} className="text-sm text-gray-400 flex items-start gap-2">
-                                        <span className="text-purple-400 mt-1">▸</span>
-                                        <span>{achievement}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
+                    {/* VERTICAL DIVIDER */}
+                    <div className="experience-divider hidden lg:block w-px bg-white/10 mx-12 xl:mx-24 self-stretch z-10" />
 
-                        <div className="flex flex-wrap gap-2">
-                            {exp.tech.map((tech, i) => (
-                                <span key={i} className="text-xs px-2 py-1 bg-gray-800/50 text-gray-400 rounded border border-gray-700">
-                                    {tech}
-                                </span>
+                    {/* RIGHT SIDE — SLIDING CONTENT */}
+                    <div ref={containerRef} className="experience-content-wrapper w-full lg:w-2/3 relative h-screen lg:overflow-hidden">
+                        <div className="experience-sliding-container flex flex-row lg:flex-col items-start w-full h-full lg:will-change-transform">
+                            {experiences.map((exp, index) => (
+                                <article 
+                                    key={index} 
+                                    className="experience-slide flex flex-col justify-start pt-24 lg:pt-0 lg:justify-center w-full lg:w-full h-full shrink-0 items-start px-6 lg:px-0"
+                                >
+                                    <div className="mb-6 lg:mb-8 w-full">
+                                        <div className="flex items-center gap-4 text-white/30 font-mono text-[10px] lg:text-sm uppercase tracking-widest mb-4 lg:mb-6">
+                                            <span>{exp.period}</span>
+                                            <div className="flex-1 h-px bg-white/10" />
+                                        </div>
+                                        
+                                        <h3 className="text-3xl md:text-5xl lg:text-7xl font-black text-white uppercase tracking-tight mb-4 leading-none">
+                                            {exp.title}
+                                        </h3>
+                                        
+                                        <div className="flex flex-wrap items-center gap-x-4 lg:gap-x-6 gap-y-2 text-white/50 text-[12px] md:text-lg font-medium">
+                                            <span className="flex items-center gap-2 text-white/80">
+                                                <Briefcase className="w-4 h-4 lg:w-5 lg:h-5 opacity-50 text-white" />
+                                                {exp.company}
+                                            </span>
+                                            <span className="flex items-center gap-2">
+                                                <MapPin className="w-3 h-3 lg:w-4 lg:h-4 opacity-50" />
+                                                {exp.location}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <p className="text-white/60 text-sm md:text-2xl mb-8 lg:mb-12 leading-relaxed italic border-l-4 border-white/20 pl-6 lg:pl-8 max-w-3xl">
+                                        {exp.description}
+                                    </p>
+
+                                    <div className="grid md:grid-cols-2 gap-8 lg:gap-12 w-full">
+                                        <div>
+                                            <h4 className="text-[10px] lg:text-xs font-mono uppercase tracking-[0.4em] text-white/20 mb-4 lg:mb-6">Key Achievements</h4>
+                                            <ul className="space-y-3 lg:space-y-6">
+                                                {exp.achievements.map((achievement, i) => (
+                                                    <li key={i} className="text-[11px] md:text-lg text-white/50 flex items-start gap-4">
+                                                        <span className="text-white/30 font-bold">/</span>
+                                                        <span>{achievement}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+
+                                        <div className="mt-6 lg:mt-0">
+                                            <h4 className="text-[10px] lg:text-xs font-mono uppercase tracking-[0.4em] text-white/20 mb-4 lg:mb-6">Technologies</h4>
+                                            <div className="flex flex-wrap gap-2 lg:gap-3">
+                                                {exp.tech.map((tech, i) => (
+                                                    <span key={i} className="text-[10px] px-3 py-1 lg:px-5 lg:py-2 bg-white/[0.04] text-white/60 rounded-full border border-white/10 font-mono uppercase tracking-widest">
+                                                        {tech}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
                             ))}
                         </div>
-                    </article>
-                ))}
+                    </div>
+
+                </div>
             </div>
         </section>
     );
 }
-

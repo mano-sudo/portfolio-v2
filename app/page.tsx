@@ -12,23 +12,25 @@ import Footer from "./components/footer";
 
 import FloatingSocials from "./components/floating-socials";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
+import ScrollSection from "./components/scroll-section";
 
 export default function Home() {
   return (
     <main className="w-full min-h-screen overflow-x-hidden overflow-y-auto scroll-smooth relative bg-black" style={{ scrollbarGutter: 'stable' }}>
       <ScrollProgress />
       <FloatingSocials />
-      <Hero />
-      <Stats />
-     
-      <Marquee />
-      <Experience />
-      <Projects />
-      <Skills />
-      <Education />
-      <Testimonials />
-      <Blog />
-      <Contact />
+      
+      <ScrollSection><Hero /></ScrollSection>
+      <ScrollSection><Stats /></ScrollSection>
+      <ScrollSection><Marquee /></ScrollSection>
+      <ScrollSection><Experience /></ScrollSection>
+      <ScrollSection><Projects /></ScrollSection>
+      <ScrollSection><Skills /></ScrollSection>
+      <ScrollSection><Education /></ScrollSection>
+      <ScrollSection><Testimonials /></ScrollSection>
+      <ScrollSection><Blog /></ScrollSection>
+      <ScrollSection><Contact /></ScrollSection>
+      
       <Footer />
     </main>
   );
