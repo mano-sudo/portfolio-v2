@@ -164,8 +164,12 @@
   body {
     @apply bg-background text-foreground font-sans;
     overflow-x: hidden;
-    background: #000000;
+    background: #000000 !important;
     background-attachment: fixed;
+  }
+
+  main {
+    background: #000000 !important;
   }
 }
 
