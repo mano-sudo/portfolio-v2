@@ -94,7 +94,7 @@ export default function Hero() {
                         </div>
                         <div className="text-purple-400">&#125;;</div>
                     </div>
-                    <h1 className="text-[clamp(3.5rem,11vw,12rem)] font-black uppercase leading-[0.9] sm:leading-none text-gray-400 px-4 sm:px-6 md:px-8">
+                    <h1 className="text-[clamp(2.5rem,9vw,12rem)] font-black uppercase leading-[0.9] sm:leading-none text-gray-400 px-4 sm:px-6 md:px-8">
                         <span className="sr-only">Full Stack </span>DEVELOPER
                     </h1>
 
