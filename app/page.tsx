@@ -16,7 +16,7 @@ import ScrollSection from "./components/scroll-section";
 
 export default function Home() {
   return (
-    <main className="w-full min-h-screen overflow-x-hidden overflow-y-auto scroll-smooth relative bg-black" style={{ scrollbarGutter: 'stable' }}>
+    <main className="w-full min-h-screen overflow-x-hidden relative bg-black" style={{ scrollbarGutter: 'stable' }}>
       <ScrollProgress />
       <FloatingSocials />
       

@@ -24,6 +24,9 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
       infinite: false,
     });
 
+    // Store Lenis instance globally for ScrollTrigger
+    (window as any).lenis = lenis;
+
     // Integrate Lenis with GSAP ScrollTrigger
     lenis.on("scroll", ScrollTrigger.update);
 
@@ -36,18 +39,48 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
 
     rafId = window.requestAnimationFrame(raf);
 
+    // Handle scrollbar dragging - detect when user drags scrollbar
+    let isDraggingScrollbar = false;
+    let lastScrollTop = window.scrollY;
+
+    const handleScroll = () => {
+      const currentScrollTop = window.scrollY;
+      const scrollDelta = Math.abs(currentScrollTop - lastScrollTop);
+      
+      // If scroll change is large, likely scrollbar dragging
+      if (scrollDelta > 10) {
+        isDraggingScrollbar = true;
+        lenis.scrollTo(currentScrollTop, { immediate: true });
+        ScrollTrigger.update();
+        
+        setTimeout(() => {
+          isDraggingScrollbar = false;
+        }, 100);
+      }
+      
+      lastScrollTop = currentScrollTop;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
     // Refresh ScrollTrigger after Lenis is initialized and on resize
     const handleResize = () => {
       ScrollTrigger.refresh();
     };
 
     window.addEventListener("resize", handleResize);
-    ScrollTrigger.refresh();
+    
+    // Wait a bit for everything to initialize
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
 
     return () => {
       if (rafId !== null) window.cancelAnimationFrame(rafId);
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("scroll", handleScroll);
       lenis.destroy();
+      delete (window as any).lenis;
       ScrollTrigger.refresh();
     };
   }, []);

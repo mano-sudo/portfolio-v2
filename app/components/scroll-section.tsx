@@ -48,22 +48,20 @@ export default function ScrollSection({ children }: ScrollSectionProps) {
             }
         );
 
-        // 2. EXIT STACKING (The "Scroll Stack" motherfucker)
-        // This pins the section at the top without spacing so the next one stacks over it
+        // 2. EXIT STACKING - Disabled pinning to prevent scroll conflicts
+        // Only animate opacity/scale without pinning to allow smooth scrolling
         gsap.to(contentRef.current, {
             scrollTrigger: {
                 trigger: containerRef.current,
                 start: "bottom bottom",
                 end: "bottom top",
                 scrub: 1,
-                pin: true,
-                pinSpacing: false,
+                pin: false,
                 invalidateOnRefresh: true,
             },
             opacity: 0,
-            scale: 0.9,
-            filter: "blur(20px)",
-            y: -100,
+            scale: 0.95,
+            filter: "blur(10px)",
             ease: "none"
         });
     }, []);
