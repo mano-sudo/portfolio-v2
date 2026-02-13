@@ -16,10 +16,10 @@ interface SmoothScrollProps {
 export default function SmoothScroll({ children }: SmoothScrollProps) {
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 1.0,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      wheelMultiplier: 1,
+      wheelMultiplier: 1.2,
       touchMultiplier: 2,
       infinite: false,
     });
@@ -39,29 +39,34 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
 
     rafId = window.requestAnimationFrame(raf);
 
-    // Handle scrollbar dragging - detect when user drags scrollbar
-    let isDraggingScrollbar = false;
-    let lastScrollTop = window.scrollY;
+    // Handle scrollbar dragging - sync Lenis when scrollbar is used
+    let scrollbarTimeout: NodeJS.Timeout;
+    let lastNativeScroll = window.scrollY;
+    let isScrollbarDrag = false;
 
-    const handleScroll = () => {
-      const currentScrollTop = window.scrollY;
-      const scrollDelta = Math.abs(currentScrollTop - lastScrollTop);
+    const handleNativeScroll = () => {
+      const currentScroll = window.scrollY;
+      const delta = Math.abs(currentScroll - lastNativeScroll);
       
-      // If scroll change is large, likely scrollbar dragging
-      if (scrollDelta > 10) {
-        isDraggingScrollbar = true;
-        lenis.scrollTo(currentScrollTop, { immediate: true });
+      // Detect scrollbar dragging (large jumps in scroll position)
+      if (delta > 5 && !isScrollbarDrag) {
+        isScrollbarDrag = true;
+        // Immediately sync Lenis to native scroll position
+        lenis.scrollTo(currentScroll, { immediate: true });
         ScrollTrigger.update();
-        
-        setTimeout(() => {
-          isDraggingScrollbar = false;
-        }, 100);
       }
       
-      lastScrollTop = currentScrollTop;
+      lastNativeScroll = currentScroll;
+      
+      // Reset scrollbar drag flag after a delay
+      clearTimeout(scrollbarTimeout);
+      scrollbarTimeout = setTimeout(() => {
+        isScrollbarDrag = false;
+      }, 200);
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    // Listen for native scroll events (from scrollbar)
+    window.addEventListener("scroll", handleNativeScroll, { passive: true, capture: true });
 
     // Refresh ScrollTrigger after Lenis is initialized and on resize
     const handleResize = () => {
@@ -78,7 +83,8 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
     return () => {
       if (rafId !== null) window.cancelAnimationFrame(rafId);
       window.removeEventListener("resize", handleResize);
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", handleNativeScroll, { capture: true } as any);
+      clearTimeout(scrollbarTimeout);
       lenis.destroy();
       delete (window as any).lenis;
       ScrollTrigger.refresh();
