@@ -83,20 +83,19 @@ export default function Experience() {
             });
         }
 
-        // 2. MAIN SCROLL LOGIC
-        const tl = gsap.timeline({
-            scrollTrigger: {
-                trigger: sectionRef.current,
-                start: "top top",
-                end: `+=${experiences.length * 200}%`,
-                pin: true,
-                scrub: 1.2,
-                anticipatePin: 1,
-            }
-        });
-
         if (isDesktop) {
-            // Desktop (Web): Vertical Slide
+            // Desktop: Pinned scroll with timeline
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: sectionRef.current,
+                    start: "top top",
+                    end: `+=${experiences.length * 200}%`,
+                    pin: true,
+                    scrub: 1.2,
+                    anticipatePin: 1,
+                }
+            });
+
             experiences.forEach((_, i) => {
                 if (i > 0) {
                     tl.to(".experience-sliding-container", {
@@ -108,30 +107,36 @@ export default function Experience() {
                 }
             });
         } else {
-            // Mobile: Auto-Hide Title & Horizontal Slide
-            // Step 1: Hide Title
-            tl.to(".experience-side-title", {
-                opacity: 0,
-                yPercent: -100,
-                duration: 0.8,
-                ease: "power2.inOut"
+            // Mobile: Vertical carousel - requires significant scroll to change content
+            const snapPoints: number[] = [];
+            for (let i = 0; i < experiences.length; i++) {
+                snapPoints.push(i / (experiences.length - 1));
+            }
+
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: sectionRef.current,
+                    start: "top top",
+                    end: `+=${(experiences.length - 1) * 250}%`, // Much more scroll distance required
+                    pin: true,
+                    scrub: 2.5, // Much slower scrub - prevents accidental content changes
+                    anticipatePin: 1,
+                    snap: {
+                        snapTo: snapPoints,
+                        duration: { min: 0.8, max: 1.5 }, // Slower snap transitions
+                        delay: 0.4, // Longer delay before snapping
+                        inertia: false, // Disable inertia to prevent accidental snaps
+                    }
+                }
             });
 
-            tl.to(".experience-content-wrapper", {
-                y: "-50px", // Subtle lift
-                duration: 0.8,
-                ease: "power2.inOut"
-            }, 0);
-
-            // Step 2: Slide through roles using xPercent
             experiences.forEach((_, i) => {
                 if (i > 0) {
                     tl.to(".experience-sliding-container", {
-                        xPercent: -100 * i,
-                        duration: 1,
+                        yPercent: -100 * i,
+                        duration: 2, // Slower animation - gives time to read content
                         ease: "power2.inOut"
                     });
-                    tl.to({}, { duration: 0.5 });
                 }
             });
         }
@@ -158,8 +163,8 @@ export default function Experience() {
                     <div className="experience-divider hidden lg:block w-px bg-white/10 mx-12 xl:mx-24 self-stretch z-10" />
 
                     {/* RIGHT SIDE — SLIDING CONTENT */}
-                    <div ref={containerRef} className="experience-content-wrapper w-full lg:w-2/3 relative h-screen lg:overflow-hidden">
-                        <div className="experience-sliding-container flex flex-row lg:flex-col items-start w-full h-full lg:will-change-transform">
+                    <div ref={containerRef} className="experience-content-wrapper w-full lg:w-2/3 relative h-screen overflow-hidden">
+                        <div className="experience-sliding-container flex flex-col items-start w-full h-full will-change-transform">
                             {experiences.map((exp, index) => (
                                 <article 
                                     key={index} 
