@@ -94,9 +94,6 @@ export default function AppNavbar() {
                         );
                     })}
 
-                    {/* Logo/Brand */}
-                    <div className="w-8 h-8 border-2 border-white rounded-sm rotate-45"></div>
-
                     {/* Right side nav */}
                     <Link
                         href="#contact"

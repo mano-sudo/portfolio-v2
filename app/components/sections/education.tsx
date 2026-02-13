@@ -89,7 +89,7 @@ export default function Education() {
                         <ul className="space-y-2">
                             {edu.achievements.map((achievement, i) => (
                                 <li key={i} className="text-sm text-gray-400 flex items-start gap-2">
-                                    <Award className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
+                                    <Award className="w-4 h-4 text-purple-400 mt-0.5 shrink-0" />
                                     <span>{achievement}</span>
                                 </li>
                             ))}

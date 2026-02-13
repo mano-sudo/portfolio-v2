@@ -181,7 +181,7 @@ export default function Experience() {
                                             <h4 className="text-[10px] lg:text-xs font-mono uppercase tracking-[0.4em] text-white/20 mb-4 lg:mb-6">Technologies</h4>
                                             <div className="flex flex-wrap gap-2 lg:gap-3">
                                                 {exp.tech.map((tech, i) => (
-                                                    <span key={i} className="text-[10px] px-3 py-1 lg:px-5 lg:py-2 bg-white/[0.04] text-white/60 rounded-full border border-white/10 font-mono uppercase tracking-widest">
+                                                    <span key={i} className="text-[10px] px-3 py-1 lg:px-5 lg:py-2 bg-white/4 text-white/60 rounded-full border border-white/10 font-mono uppercase tracking-widest">
                                                         {tech}
                                                     </span>
                                                 ))}
