@@ -20,6 +20,9 @@ export default function ScrollSection({ children }: ScrollSectionProps) {
     useGSAP(() => {
         if (!containerRef.current || !contentRef.current) return;
 
+        // Wait for ScrollTrigger to be ready
+        ScrollTrigger.refresh();
+
         // 1. ENTRANCE REVEAL (Lenis-style)
         gsap.fromTo(contentRef.current, 
             { 
@@ -40,6 +43,7 @@ export default function ScrollSection({ children }: ScrollSectionProps) {
                     start: "top bottom",
                     end: "top center",
                     scrub: 1,
+                    invalidateOnRefresh: true,
                 }
             }
         );
@@ -54,6 +58,7 @@ export default function ScrollSection({ children }: ScrollSectionProps) {
                 scrub: 1,
                 pin: true,
                 pinSpacing: false,
+                invalidateOnRefresh: true,
             },
             opacity: 0,
             scale: 0.9,
