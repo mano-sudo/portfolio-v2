@@ -1,150 +1,120 @@
 "use client";
 
-import { useGSAP } from "@/app/hooks/useGSAP";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import React, { useRef, useLayoutEffect, useState } from "react";
+import {
+  motion,
+  useMotionValue,
+  useTransform,
+  useAnimationFrame
+} from 'motion/react';
+import '@/components/ScrollVelocity.css';
 
-if (typeof window !== "undefined") {
-    gsap.registerPlugin(ScrollTrigger);
+// All tech stack logos/names - combine into continuous string
+const techStackString = "React • Next.js • TypeScript • JavaScript • Node.js • Express.js • Python • PostgreSQL • MongoDB • Tailwind CSS • GSAP • Three.js • Git • Docker • AWS • GraphQL • Redis • HTML5 • CSS3 • Laravel • PHP • MySQL • ";
+
+function useElementWidth<T extends HTMLElement>(ref: React.RefObject<T | null>): number {
+  const [width, setWidth] = useState(0);
+
+  useLayoutEffect(() => {
+    function updateWidth() {
+      if (ref.current) {
+        setWidth(ref.current.offsetWidth);
+      }
+    }
+    updateWidth();
+    window.addEventListener('resize', updateWidth);
+    return () => window.removeEventListener('resize', updateWidth);
+  }, [ref]);
+
+  return width;
 }
 
-const frontendSkills = [
-    { name: "React", level: 90 },
-    { name: "Next.js", level: 85 },
-    { name: "TypeScript", level: 85 },
-    { name: "JavaScript", level: 90 },
-    { name: "HTML/CSS", level: 95 },
-    { name: "Tailwind CSS", level: 90 },
-    { name: "Three.js", level: 75 },
-    { name: "GSAP", level: 80 }
-];
+function VelocityText({ children, baseVelocity = 50, isMobile = false }: { children: React.ReactNode; baseVelocity?: number; isMobile?: boolean }) {
+  const baseX = useMotionValue(0);
+  const copyRef = useRef<HTMLSpanElement>(null);
+  const copyWidth = useElementWidth(copyRef);
 
-const backendSkills = [
-    { name: "Node.js", level: 85 },
-    { name: "Express.js", level: 80 },
-    { name: "Python", level: 75 },
-    { name: "PostgreSQL", level: 80 },
-    { name: "MongoDB", level: 75 },
-    { name: "REST APIs", level: 85 },
-    { name: "GraphQL", level: 70 },
-    { name: "Redis", level: 70 }
-];
+  function wrap(min: number, max: number, v: number): number {
+    if (max === min) return 0;
+    const range = max - min;
+    const mod = (((v - min) % range) + range) % range;
+    return mod + min;
+  }
 
-const toolsSkills = [
-    { name: "Git", level: 90 },
-    { name: "Docker", level: 75 },
-    { name: "AWS", level: 70 },
-    { name: "CI/CD", level: 75 },
-    { name: "Testing", level: 80 },
-    { name: "Agile", level: 85 }
-];
+  const x = useTransform(baseX, (v) => {
+    if (copyWidth === 0) return '0px';
+    return `${wrap(-copyWidth, 0, v)}px`;
+  });
+
+  useAnimationFrame((t, delta) => {
+    if (copyWidth === 0) return;
+    const moveBy = baseVelocity * (delta / 1000);
+    baseX.set(baseX.get() + moveBy);
+  });
+
+  const spans = [];
+  // Use fewer copies on mobile for better performance
+  const numCopies = isMobile ? 4 : 6;
+  for (let i = 0; i < numCopies; i++) {
+    spans.push(
+      <span key={i} ref={i === 0 ? copyRef : null} className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black text-white/20 hover:text-white/40 transition-colors duration-300 uppercase tracking-tighter italic whitespace-nowrap shrink-0">
+        {children}
+      </span>
+    );
+  }
+
+  return (
+    <div className="parallax overflow-hidden w-full">
+      <motion.div 
+        className="scroller" 
+        style={{ 
+          x, 
+          display: "flex", 
+          gap: "clamp(1rem, 3vw, 3rem)", 
+          paddingLeft: "clamp(0.75rem, 2vw, 1.5rem)", 
+          paddingRight: "clamp(0.75rem, 2vw, 1.5rem)", 
+          willChange: "transform",
+          width: "max-content"
+        }}
+      >
+        {spans}
+      </motion.div>
+    </div>
+  );
+}
 
 export default function Skills() {
-    const sectionRef = useGSAP(() => {
-        gsap.from(".skill-item", {
-            scrollTrigger: {
-                trigger: ".skills-section",
-                start: "top 80%",
-            },
-            opacity: 0,
-            x: -30,
-            duration: 0.6,
-            stagger: 0.1,
-            ease: "power2.out"
-        });
+    const sectionRef = useRef<HTMLElement>(null);
+    const [isMobile, setIsMobile] = React.useState(false);
 
-        gsap.utils.toArray(".skill-bar").forEach((bar: any) => {
-            const level = bar.dataset.level;
-            gsap.to(bar, {
-                scrollTrigger: {
-                    trigger: bar,
-                    start: "top 90%",
-                },
-                width: `${level}%`,
-                duration: 1,
-                ease: "power2.out"
-            });
-        });
+    React.useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
     return (
-        <section ref={sectionRef} className="skills-section max-w-4xl mx-auto px-6 py-20">
-            <div className="mb-12">
-                <span className="text-sm text-gray-300 uppercase tracking-wider">Skills</span>
-                <h2 className="text-4xl md:text-5xl font-bold mt-2 mb-4">Technologies</h2>
-                <p className="text-gray-400 text-lg">
-                    A comprehensive overview of my technical expertise across frontend, backend, and development tools.
-                </p>
-            </div>
-            
-            <div className="space-y-12">
-                {/* Frontend Skills */}
-                <div>
-                    <h3 className="text-xl font-semibold mb-6 text-gray-300 border-b border-gray-800 pb-2">Frontend</h3>
-                    <div className="space-y-4">
-                        {frontendSkills.map((skill, index) => (
-                            <div key={index} className="skill-item">
-                                <div className="flex justify-between mb-2">
-                                    <span className="text-gray-300 text-sm font-medium">{skill.name}</span>
-                                    <span className="text-gray-300 text-xs">{skill.level}%</span>
-                                </div>
-                                <div className="h-1 bg-gray-800 rounded-full overflow-hidden">
-                                    <div 
-                                        className="skill-bar h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
-                                        data-level={skill.level}
-                                        style={{ width: 0 }}
-                                    />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+        <section ref={sectionRef} className="skills-section relative bg-black overflow-hidden py-8 sm:py-12 md:py-16 lg:py-24">
+            {/* Gradient overlays for fade effect - smaller on mobile */}
+            <div className="absolute inset-y-0 left-0 w-12 sm:w-16 md:w-24 lg:w-32 bg-linear-to-r from-black via-black/80 to-transparent z-20 pointer-events-none" />
+            <div className="absolute inset-y-0 right-0 w-12 sm:w-16 md:w-24 lg:w-32 bg-linear-to-l from-black via-black/80 to-transparent z-20 pointer-events-none" />
 
-                {/* Backend Skills */}
-                <div>
-                    <h3 className="text-xl font-semibold mb-6 text-gray-300 border-b border-gray-800 pb-2">Backend</h3>
-                    <div className="space-y-4">
-                        {backendSkills.map((skill, index) => (
-                            <div key={index} className="skill-item">
-                                <div className="flex justify-between mb-2">
-                                    <span className="text-gray-300 text-sm font-medium">{skill.name}</span>
-                                    <span className="text-gray-300 text-xs">{skill.level}%</span>
-                                </div>
-                                <div className="h-1 bg-gray-800 rounded-full overflow-hidden">
-                                    <div 
-                                        className="skill-bar h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
-                                        data-level={skill.level}
-                                        style={{ width: 0 }}
-                                    />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+            <div className="relative z-10 overflow-hidden space-y-4 sm:space-y-6 md:space-y-8">
+                {/* First row - scrolling left */}
+                <VelocityText baseVelocity={isMobile ? 60 : 80} isMobile={isMobile}>
+                    {techStackString}
+                </VelocityText>
 
-                {/* Tools & Others */}
-                <div>
-                    <h3 className="text-xl font-semibold mb-6 text-gray-300 border-b border-gray-800 pb-2">Tools & Others</h3>
-                    <div className="space-y-4">
-                        {toolsSkills.map((skill, index) => (
-                            <div key={index} className="skill-item">
-                                <div className="flex justify-between mb-2">
-                                    <span className="text-gray-300 text-sm font-medium">{skill.name}</span>
-                                    <span className="text-gray-300 text-xs">{skill.level}%</span>
-                                </div>
-                                <div className="h-1 bg-gray-800 rounded-full overflow-hidden">
-                                    <div 
-                                        className="skill-bar h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
-                                        data-level={skill.level}
-                                        style={{ width: 0 }}
-                                    />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                {/* Second row - scrolling right (opposite direction) */}
+                <VelocityText baseVelocity={isMobile ? -60 : -80} isMobile={isMobile}>
+                    {techStackString}
+                </VelocityText>
             </div>
         </section>
     );
 }
 
+    
