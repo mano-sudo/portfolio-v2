@@ -83,8 +83,8 @@ export default function Experience() {
             });
         }
 
+        // Desktop: Pinned scroll with timeline
         if (isDesktop) {
-            // Desktop: Pinned scroll with timeline
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: sectionRef.current,
@@ -106,46 +106,14 @@ export default function Experience() {
                     tl.to({}, { duration: 0.5 });
                 }
             });
-        } else {
-            // Mobile: Vertical carousel - requires significant scroll to change content
-            const snapPoints: number[] = [];
-            for (let i = 0; i < experiences.length; i++) {
-                snapPoints.push(i / (experiences.length - 1));
-            }
-
-            const tl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: sectionRef.current,
-                    start: "top top",
-                    end: `+=${(experiences.length - 1) * 250}%`, // Much more scroll distance required
-                    pin: true,
-                    scrub: 2.5, // Much slower scrub - prevents accidental content changes
-                    anticipatePin: 1,
-                    snap: {
-                        snapTo: snapPoints,
-                        duration: { min: 0.8, max: 1.5 }, // Slower snap transitions
-                        delay: 0.4, // Longer delay before snapping
-                        inertia: false, // Disable inertia to prevent accidental snaps
-                    }
-                }
-            });
-
-            experiences.forEach((_, i) => {
-                if (i > 0) {
-                    tl.to(".experience-sliding-container", {
-                        yPercent: -100 * i,
-                        duration: 2, // Slower animation - gives time to read content
-                        ease: "power2.inOut"
-                    });
-                }
-            });
         }
+        // Mobile: Normal scroll - no restrictions, both experiences visible
     }, []);
 
     return (
         <section ref={sectionRef} className="experience-section relative bg-black overflow-hidden">
-            <div className="max-w-[1920px] mx-auto px-6 md:px-12 lg:px-20 xl:px-32 h-full">
-                <div className="flex flex-col lg:flex-row min-h-screen">
+            <div className="max-w-[1920px] mx-auto px-6 md:px-12 lg:px-20 xl:px-32 lg:h-full">
+                <div className="flex flex-col lg:flex-row lg:min-h-screen">
                     
                     {/* LEFT SIDE — FIXED TITLE */}
                     <div className="experience-side-title w-full lg:w-1/3 pt-12 lg:pt-0 lg:h-screen lg:flex lg:flex-col lg:justify-center z-20">
@@ -163,12 +131,12 @@ export default function Experience() {
                     <div className="experience-divider hidden lg:block w-px bg-white/10 mx-12 xl:mx-24 self-stretch z-10" />
 
                     {/* RIGHT SIDE — SLIDING CONTENT */}
-                    <div ref={containerRef} className="experience-content-wrapper w-full lg:w-2/3 relative h-screen overflow-hidden">
-                        <div className="experience-sliding-container flex flex-col items-start w-full h-full will-change-transform">
+                    <div ref={containerRef} className="experience-content-wrapper w-full lg:w-2/3 relative lg:h-screen lg:overflow-hidden">
+                        <div className="experience-sliding-container flex flex-col items-start w-full lg:h-full lg:will-change-transform gap-0 lg:gap-0">
                             {experiences.map((exp, index) => (
                                 <article 
                                     key={index} 
-                                    className="experience-slide flex flex-col justify-start pt-24 lg:pt-0 lg:justify-center w-full lg:w-full h-full shrink-0 items-start px-6 lg:px-0"
+                                    className="experience-slide flex flex-col justify-start pt-12 lg:pt-0 lg:justify-center w-full lg:w-full lg:h-full min-h-0 lg:min-h-0 shrink-0 items-start px-6 lg:px-0 pb-8 lg:pb-0"
                                 >
                                     <div className="mb-6 lg:mb-8 w-full">
                                         <div className="flex items-center gap-4 text-white/30 font-mono text-[10px] lg:text-sm uppercase tracking-widest mb-4 lg:mb-6">
@@ -192,11 +160,11 @@ export default function Experience() {
                                         </div>
                                     </div>
 
-                                    <p className="text-white/60 text-sm md:text-2xl mb-8 lg:mb-12 leading-relaxed italic border-l-4 border-white/20 pl-6 lg:pl-8 max-w-3xl">
+                                    <p className="text-white/60 text-sm md:text-2xl mb-6 lg:mb-12 leading-relaxed italic border-l-4 border-white/20 pl-6 lg:pl-8 max-w-3xl">
                                         {exp.description}
                                     </p>
 
-                                    <div className="grid md:grid-cols-2 gap-8 lg:gap-12 w-full">
+                                    <div className="grid md:grid-cols-2 gap-6 lg:gap-12 w-full">
                                         <div>
                                             <h4 className="text-[10px] lg:text-xs font-mono uppercase tracking-[0.4em] text-white/20 mb-4 lg:mb-6">Key Achievements</h4>
                                             <ul className="space-y-3 lg:space-y-6">
