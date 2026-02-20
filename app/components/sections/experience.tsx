@@ -221,7 +221,7 @@ export default function Experience() {
                          willChange: 'transform'
                      }}
                 />
-                <div className="blackhole-circle relative w-[100px] h-[100px] lg:w-[150px] lg:h-[150px] rounded-full bg-black" 
+                <div className="blackhole-circle relative w-[100px] h-[100px] lg:w-[150px] lg:h-[150px] rounded-full bg-black opacity-0" 
                      style={{
                          transformOrigin: 'center center',
                          willChange: 'transform'

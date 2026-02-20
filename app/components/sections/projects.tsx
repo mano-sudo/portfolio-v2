@@ -298,7 +298,7 @@ export default function Projects() {
     return (
         <section ref={sectionRef} className="projects-section relative bg-black overflow-hidden">
             {/* Featured Work Title - Split Animation */}
-            <div className="featured-work-title fixed inset-0 z-10000 flex items-center justify-center pointer-events-none">
+            <div className="featured-work-title fixed inset-0 z-10000 flex items-center justify-center pointer-events-none opacity-0">
                 <h2 className="text-7xl lg:text-9xl font-black text-white uppercase leading-[0.9] tracking-tighter italic relative">
                     <span className="featured-work-title-left inline-block">Featured</span>
                     <span className="featured-work-title-right inline-block ml-4">Work</span>
