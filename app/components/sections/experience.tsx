@@ -87,9 +87,10 @@ export default function Experience() {
         if (isDesktop) {
             const tl = gsap.timeline({
                 scrollTrigger: {
+                    id: "experience-scroll",
                     trigger: sectionRef.current,
                     start: "top top",
-                    end: `+=${experiences.length * 200}%`,
+                    end: `+=${experiences.length * 200 + 150}%`, // Extended to include blackhole animation
                     pin: true,
                     scrub: 1.2,
                     anticipatePin: 1,
@@ -106,12 +107,127 @@ export default function Experience() {
                     tl.to({}, { duration: 0.5 });
                 }
             });
+
+            // Blackhole transition at the end - add to existing timeline
+            // Start with blackhole hidden and very small
+            gsap.set(".blackhole-circle", {
+                scale: 0.1,
+                opacity: 0, // Hidden until last scroll
+            });
+            gsap.set(".blackhole-shadow", {
+                scale: 0.1,
+                opacity: 0,
+            });
+
+            // Calculate scale needed to cover screen (responsive)
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            const blackholeSize = isDesktop ? 150 : 100; // Smaller base size on mobile
+            const diagonal = Math.sqrt(viewportWidth * viewportWidth + viewportHeight * viewportHeight);
+            const scaleNeeded = (diagonal / blackholeSize) * (isDesktop ? 1.5 : 1.8); // Slightly more scale on mobile to ensure coverage
+
+            // Add blackhole expansion to the end of experience timeline
+            // First, make the circle fully visible (100% opacity) at the last scroll
+            tl.to(".blackhole-circle", {
+                opacity: 1,
+                duration: 0.1,
+                ease: "power1.out"
+            });
+
+            // Then expand blackhole circle - covers screen with 100% opacity
+            tl.to(".blackhole-circle", {
+                scale: scaleNeeded,
+                opacity: 1, // Ensure 100% opacity
+                duration: 1.5,
+                ease: "power2.inOut"
+            });
+
+            // Expand the shadow layer with 100% opacity
+            tl.to(".blackhole-shadow", {
+                scale: scaleNeeded * 1.3,
+                opacity: 1, // 100% opacity
+                duration: 1.5,
+                ease: "power2.inOut"
+            }, "<");
+
+            // Fade out experience content as blackhole expands
+            tl.to(".experience-section > div", {
+                opacity: 0,
+                duration: 1,
+                ease: "power1.inOut"
+            }, "<0.5");
+
+        } else {
+            // Mobile: Simpler blackhole animation
+            // Start with blackhole hidden
+            gsap.set(".blackhole-circle", {
+                scale: 0.1,
+                opacity: 0,
+            });
+            gsap.set(".blackhole-shadow", {
+                scale: 0.1,
+                opacity: 0,
+            });
+
+            // Calculate scale for mobile
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            const blackholeSize = 100;
+            const diagonal = Math.sqrt(viewportWidth * viewportWidth + viewportHeight * viewportHeight);
+            const scaleNeeded = (diagonal / blackholeSize) * 1.8;
+
+            // Mobile blackhole animation - triggers when scrolling to bottom of experience section
+            const mobileBlackholeTl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: sectionRef.current,
+                    start: "bottom 80%", // Start when bottom of section is 80% down viewport
+                    end: "bottom top", // End when bottom hits top of viewport
+                    scrub: 1,
+                }
+            });
+
+            // Show and expand blackhole on mobile
+            mobileBlackholeTl.to(".blackhole-circle", {
+                opacity: 1,
+                scale: scaleNeeded,
+                duration: 1,
+                ease: "power2.inOut"
+            });
+
+            mobileBlackholeTl.to(".blackhole-shadow", {
+                opacity: 1,
+                scale: scaleNeeded * 1.3,
+                duration: 1,
+                ease: "power2.inOut"
+            }, "<");
+
+            // Fade out experience content
+            mobileBlackholeTl.to(".experience-section > div", {
+                opacity: 0,
+                duration: 0.8,
+                ease: "power1.inOut"
+            }, "<0.3");
         }
-        // Mobile: Normal scroll - no restrictions, both experiences visible
     }, []);
 
     return (
         <section ref={sectionRef} className="experience-section relative bg-black overflow-hidden">
+            {/* Blackhole Overlay - fixed to overlay on top of everything */}
+            <div className="blackhole-overlay fixed inset-0 z-9999 pointer-events-none flex items-center justify-center">
+                <div className="blackhole-shadow absolute w-[100px] h-[100px] lg:w-[150px] lg:h-[150px] rounded-full bg-black opacity-0"
+                     style={{
+                         boxShadow: '0 0 0 2000px rgba(0, 0, 0, 1), 0 0 0 4000px rgba(0, 0, 0, 0.95)',
+                         transformOrigin: 'center center',
+                         willChange: 'transform'
+                     }}
+                />
+                <div className="blackhole-circle relative w-[100px] h-[100px] lg:w-[150px] lg:h-[150px] rounded-full bg-black" 
+                     style={{
+                         transformOrigin: 'center center',
+                         willChange: 'transform'
+                     }}
+                />
+            </div>
             <div className="max-w-[1920px] mx-auto px-6 md:px-12 lg:px-20 xl:px-32 lg:h-full">
                 <div className="flex flex-col lg:flex-row lg:min-h-screen">
                     

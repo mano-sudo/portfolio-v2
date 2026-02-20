@@ -13,65 +13,36 @@ if (typeof window !== "undefined") {
 
 const projects = [
     {
-        title: "E-Commerce Platform",
-        description: "A full-stack e-commerce solution featuring secure payment processing, inventory management, and a comprehensive admin dashboard. Built with modern web technologies for optimal performance and scalability.",
-        tech: ["React", "Node.js", "TypeScript", "PostgreSQL", "Stripe API"],
-        github: "https://github.com",
-        live: "https://demo.com",
+        title: "Attendance Monitoring System",
+        description: "A web-based attendance monitoring system built with PHP, MySQL, Bootstrap, and JavaScript. Enables real-time logging of employee time-in/out, automated attendance tracking, and report generation. Features an intuitive admin dashboard for employee and schedule management, with a responsive UI and efficient backend integration for streamlined workforce monitoring.",
+        tech: ["html", "css", "php", "mysql", "bootstrap", "javascript"],
+        github: "https://github.com/mano-sudo/AMS",
+        live: "https://ams.manosudo.com",
         featured: true,
         year: "2024",
-        image: "/images/projects/ecommerce.jpg"
+        image: "/images/AMS.png"
     },
     {
-        title: "Task Management App",
-        description: "Real-time collaborative task management application with team features, drag-and-drop functionality, and instant notifications. Supports multiple workspaces and role-based access control.",
-        tech: ["Next.js", "MongoDB", "Socket.io", "Redis"],
-        github: "https://github.com",
-        live: "https://demo.com",
+        title: "OutfitHaven: Responsive E-Commerce Platform",
+        description: "A Web-Based E-Commerce Platform for Local Fashion Brands in the Philippines Fashion Depot is a modern web-based e-commerce system built with React, Tailwind CSS, PHP, and MySQL, designed to showcase and support Philippine local fashion brands. The platform offers a smooth and dynamic shopping experience, enabling customers to browse collections in real-time, securely place orders, and engage directly with their favorite local designers.",
+        tech: ["react", "tailwind", "Node.js", "mongoDB"],
+        github: "https://github.com/mano-sudo/OutfitHaven",
+        live: "https://outfithat.manosudo.com",
         featured: true,
         year: "2024",
-        image: "/images/projects/taskapp.jpg"
+        image: "/images/otf.png"
     },
     {
-        title: "Portfolio Website",
-        description: "Modern, responsive portfolio website featuring Three.js 3D animations, GSAP scroll animations, and smooth transitions. Built with performance and SEO optimization in mind.",
-        tech: ["Next.js", "Three.js", "GSAP", "Tailwind CSS"],
-        github: "https://github.com",
-        live: "https://demo.com",
+        title: "Burger Ka Samen Ordering System",
+        description: "A full-stack burger ordering system built with PHP, MySQL, Tailwind CSS, and JavaScript. Supports customer ordering with cart and checkout features, and includes an admin dashboard for managing products, orders, and users. Designed with a responsive UI and efficient backend.",
+        tech: ["html", "css", "php", "mysql", "tailwind", "javascript"],
+        github: "https://github.com/mano-sudo/Ordering-System",
+        live: "https://ordering.manosudo.com",
         featured: false,
         year: "2023",
-        image: "/images/projects/portfolio.jpg"
+        image: "/images/bks.png"
     },
-    {
-        title: "Social Media Dashboard",
-        description: "Analytics dashboard for social media management with real-time metrics, content scheduling, and engagement tracking across multiple platforms.",
-        tech: ["React", "Python", "FastAPI", "PostgreSQL", "Chart.js"],
-        github: "https://github.com",
-        live: "https://demo.com",
-        featured: false,
-        year: "2023",
-        image: "/images/projects/dashboard.jpg"
-    },
-    {
-        title: "Weather Forecast App",
-        description: "Beautiful weather application with location-based forecasts, interactive maps, and detailed weather analytics. Features offline support and push notifications.",
-        tech: ["Next.js", "TypeScript", "OpenWeather API", "PWA"],
-        github: "https://github.com",
-        live: "https://demo.com",
-        featured: false,
-        year: "2023",
-        image: "/images/projects/weather.jpg"
-    },
-    {
-        title: "Blog CMS Platform",
-        description: "Content management system for bloggers with markdown support, SEO tools, analytics, and customizable themes. Includes comment system and social sharing.",
-        tech: ["Next.js", "Prisma", "PostgreSQL", "NextAuth"],
-        github: "https://github.com",
-        live: "https://demo.com",
-        featured: false,
-        year: "2022",
-        image: "/images/projects/blog.jpg"
-    }
+   
 ];
 
 export default function Projects() {
@@ -79,22 +50,86 @@ export default function Projects() {
     const sectionRef = useGSAP(() => {
         const isDesktop = window.innerWidth >= 1024;
 
-        // Entrance animation
         if (isDesktop) {
-            gsap.from(".projects-header", {
-                y: 50,
-                opacity: 0,
-                scrollTrigger: {
-                    trigger: sectionRef.current,
-                    start: "top 80%",
-                    end: "top 50%",
-                    scrub: 1,
-                }
-            });
-        }
+            // Initial state: hide everything on desktop only
+            gsap.set(".projects-header", { opacity: 0, y: 20 });
+            gsap.set(".projects-content-wrapper", { opacity: 0 });
+            gsap.set(".featured-work-title", { opacity: 0, scale: 0.5, filter: "blur(20px)" });
+            gsap.set(".featured-work-title-left", { x: 0, opacity: 1 });
+            gsap.set(".featured-work-title-right", { x: 0, opacity: 1 });
 
-        // Desktop: Pinned scroll with stacked images and content sliding from left
-        if (isDesktop) {
+            // Combined timeline for title emergence, split, and projects reveal
+            // Will be extended to include projects scroll
+            const transitionTl = gsap.timeline();
+
+            // Phase 1: Show "Featured Work" title emerging from blackhole
+            transitionTl.to(".featured-work-title", {
+                opacity: 1,
+                scale: 1,
+                filter: "blur(0px)",
+                duration: 0.5,
+                ease: "power2.out"
+            });
+
+            // Phase 2: Hold title visible
+            transitionTl.to({}, { duration: 0.3 });
+
+            // Phase 3: Split the title in half
+            transitionTl.to(".featured-work-title-left", {
+                x: -window.innerWidth * 1.5,
+                opacity: 0,
+                duration: 0.4,
+                ease: "power3.in"
+            });
+
+            transitionTl.to(".featured-work-title-right", {
+                x: window.innerWidth * 1.5,
+                opacity: 0,
+                duration: 0.4,
+                ease: "power3.in"
+            }, "<");
+
+            // Hide title container
+            transitionTl.to(".featured-work-title", {
+                opacity: 0,
+                duration: 0.2,
+                ease: "power1.in"
+            }, "-=0.3");
+
+            // Phase 4: Show projects content after title splits
+            transitionTl.to(".projects-header", {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                ease: "power2.out"
+            }, "-=0.2");
+
+            transitionTl.to(".projects-content-wrapper", {
+                opacity: 1,
+                duration: 0.5,
+                ease: "power2.out"
+            }, "<");
+
+            // Show first project card and content
+            transitionTl.to(".project-card-0", {
+                opacity: 1,
+                duration: 0.5,
+                ease: "power2.out"
+            }, "<");
+
+            transitionTl.to(".project-content-0", {
+                opacity: 1,
+                duration: 0.5,
+                ease: "power2.out"
+            }, "<");
+
+            // Ensure title overlay is completely hidden at the end
+            transitionTl.set(".featured-work-title", {
+                display: "none",
+                pointerEvents: "none"
+            });
+
+            // Desktop: Pinned scroll with stacked images and content sliding from left
             const itemStackDistance = 30;
             const itemScale = 0.03;
             const baseScale = 0.85;
@@ -102,7 +137,7 @@ export default function Projects() {
             // Set initial states - all images visible and stacked
             projects.forEach((_, i) => {
                 if (i === 0) {
-                    // First project content - visible
+                    // First project content - visible (will be shown after transition)
                     gsap.set(`.project-content-${i}`, { x: 0, opacity: 1 });
                     gsap.set(`.project-card-${i}`, { opacity: 1 });
                 } else {
@@ -127,21 +162,28 @@ export default function Projects() {
                 });
             });
 
-            const tl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: sectionRef.current,
-                    start: "top top",
-                    end: `+=${(projects.length - 1) * 100}%`,
-                    pin: true,
-                    scrub: 1,
-                    anticipatePin: 1,
-                }
+            // Create ScrollTrigger for the combined timeline
+            ScrollTrigger.create({
+                trigger: sectionRef.current,
+                start: "top top",
+                end: `+=${200 + (projects.length - 1) * 100}%`,
+                scrub: 1,
+                pin: true,
+                anticipatePin: 1,
+                animation: transitionTl
             });
 
+            // Projects scroll animation - add to transition timeline after transition
+            const tl = transitionTl;
+            
+            // Add projects scroll animations after transition completes
+            // Position them to start after the transition (at position 2.0 in timeline)
+
             // Animate transitions between projects
+            // Start after transition (position 2.0) + project index
             projects.forEach((_, i) => {
                 if (i > 0) {
-                    const position = i - 1;
+                    const position = 2.0 + (i - 1);
                     
                     // Hide previous card
                     tl.to(`.project-card-${i - 1}`, {
@@ -224,15 +266,48 @@ export default function Projects() {
                     }
                 }
             });
+        } else {
+            // Mobile & Tablet: Simple configuration - no animations, just show projects
+            gsap.set(".featured-work-title", { display: "none" });
+            
+            // Make sure all projects are visible and in normal flow - no animations
+            projects.forEach((_, i) => {
+                gsap.set(`.project-card-${i}`, { 
+                    opacity: 1,
+                    position: "relative",
+                    display: "block",
+                    y: 0
+                });
+                gsap.set(`.project-content-${i}`, { 
+                    opacity: 1,
+                    x: 0,
+                    y: 0
+                });
+                gsap.set(`.project-image-${i}`, {
+                    opacity: 1,
+                    scale: 1,
+                    x: 0,
+                    y: 0,
+                    filter: "blur(0px)",
+                    position: "relative"
+                });
+            });
         }
-        // Mobile: Normal scroll
     }, []);
 
     return (
         <section ref={sectionRef} className="projects-section relative bg-black overflow-hidden">
+            {/* Featured Work Title - Split Animation */}
+            <div className="featured-work-title fixed inset-0 z-10000 flex items-center justify-center pointer-events-none">
+                <h2 className="text-7xl lg:text-9xl font-black text-white uppercase leading-[0.9] tracking-tighter italic relative">
+                    <span className="featured-work-title-left inline-block">Featured</span>
+                    <span className="featured-work-title-right inline-block ml-4">Work</span>
+                </h2>
+            </div>
+
             <div className="max-w-[1920px] mx-auto px-6 md:px-12 lg:px-20 xl:px-32">
-                {/* Header */}
-                <div className="projects-header pt-12 lg:pt-20 pb-8 lg:pb-12">
+                {/* Header - Only visible on mobile/tablet, hidden on desktop */}
+                <div className="projects-header pt-12 lg:pt-20 pb-8 lg:pb-12 lg:hidden">
                     <span className="text-[10px] uppercase tracking-[0.3em] font-mono text-white/30 mb-2 lg:mb-4 block">Projects</span>
                     <h2 className="text-2xl md:text-5xl lg:text-7xl font-black text-white uppercase leading-[0.9] tracking-tighter italic mb-4">
                         Featured<br className="lg:hidden" /> <span className="lg:block">Work</span>
@@ -242,13 +317,13 @@ export default function Projects() {
                     </p>
                 </div>
 
-                {/* Projects Container - One at a time */}
-                <div ref={containerRef} className="projects-content-wrapper relative lg:h-[calc(100vh-300px)] lg:overflow-hidden">
-                    <div className="projects-sliding-container relative w-full lg:h-full">
+                {/* Projects Container - Desktop: pinned scroll, Mobile/Tablet: simple normal scroll */}
+                <div ref={containerRef} className="projects-content-wrapper relative lg:h-screen lg:overflow-hidden z-10 lg:flex lg:items-center">
+                    <div className="projects-sliding-container relative w-full lg:h-full lg:flex lg:items-center flex flex-col lg:flex-row gap-0 lg:gap-0">
                         {projects.map((project, index) => (
                             <article 
                                 key={index} 
-                                className={`project-card project-card-${index} relative lg:absolute inset-0 flex flex-col lg:flex-row gap-8 lg:gap-12 w-full lg:h-full min-h-[600px] lg:min-h-0 items-start lg:items-center pb-12 lg:pb-8`}
+                                className={`project-card project-card-${index} relative lg:absolute inset-0 flex flex-col lg:flex-row gap-6 md:gap-8 lg:gap-12 w-full lg:h-full min-h-[500px] md:min-h-[600px] lg:min-h-0 items-start lg:items-center justify-start lg:justify-center pb-8 md:pb-12 lg:pb-0 mb-16 md:mb-20 lg:mb-0`}
                             >
                                 {/* Content Section - LEFT SIDE */}
                                 <div className={`project-content project-content-${index} w-full lg:w-1/2 flex flex-col justify-center z-10 relative ${index === 0 ? 'lg:opacity-100' : 'lg:opacity-0'}`}>
@@ -283,7 +358,7 @@ export default function Projects() {
                                         </div>
                                     </div>
                                     
-                                    <div className="flex flex-wrap gap-4 lg:gap-6">
+                                    <div className="flex flex-wrap gap-6 mb-5 md:gap-8 lg:gap-6">
                                         <a 
                                             href={project.github} 
                                             target="_blank"
@@ -311,12 +386,12 @@ export default function Projects() {
                                     </div>
                                 </div>
 
-                                {/* Image Section - RIGHT SIDE - Stacked */}
-                                <div className="w-full lg:w-1/2 relative h-[300px] lg:h-[85%] lg:mb-8">
+                                {/* Image Section - RIGHT SIDE - Stacked on desktop, normal on mobile/tablet */}
+                                <div className="w-full lg:w-1/2 relative h-[250px] sm:h-[300px] md:h-[400px] lg:h-[600px] lg:max-h-[80vh]">
                                     <div 
-                                        className={`project-image project-image-${index} absolute top-0 left-0 w-full h-full overflow-hidden rounded-sm border border-white/10 bg-white/5`}
+                                        className={`project-image project-image-${index} relative lg:absolute top-0 left-0 w-full h-full overflow-hidden rounded-sm border border-white/10 bg-white/5`}
                                         style={{
-                                            transformOrigin: 'top center',
+                                            transformOrigin: 'center center',
                                             willChange: 'transform, filter, opacity',
                                             backfaceVisibility: 'hidden'
                                         }}
@@ -326,10 +401,10 @@ export default function Projects() {
                                                 src={project.image}
                                                 alt={project.title}
                                                 fill
-                                                className="object-cover opacity-90"
+                                                className="object-contain opacity-90"
                                                 sizes="(max-width: 1024px) 100vw, 50vw"
                                             />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                                            <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent" />
                                         </div>
                                     </div>
                                 </div>
