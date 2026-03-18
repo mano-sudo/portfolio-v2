@@ -2,7 +2,7 @@
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",
-      "service": "devbyroman"
+      "service": "portfolio-v2"
     }
   ]
 }
