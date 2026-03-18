@@ -1,12 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-if (typeof window !== "undefined") {
-    gsap.registerPlugin(ScrollTrigger);
-}
 
 export default function Hero() {
     const sectionRef = useRef<HTMLDivElement>(null);
@@ -25,66 +19,11 @@ export default function Hero() {
         return () => clearInterval(id);
     }, []);
 
-    useEffect(() => {
-        if (!sectionRef.current) return;
-
-        const ctx = gsap.context(() => {
-            const tl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: sectionRef.current,
-                    start: "top top",
-                    end: "bottom top",
-                    scrub: 0.5,
-                }
-            });
-
-            // Main text slides up + fades
-            tl.to(".hero-text-block", {
-                y: -80,
-                opacity: 0.3,
-                duration: 1,
-                ease: "none"
-            }, 0);
-
-            // Code snippet (desktop) — folds up and fades
-            tl.to(".hero-code-snippet", {
-                y: -60,
-                opacity: 0,
-                scale: 0.9,
-                duration: 1,
-                ease: "none"
-            }, 0);
-
-            // Mobile description — slides up and fades
-            tl.to(".hero-mobile-desc", {
-                y: -50,
-                opacity: 0,
-                duration: 1,
-                ease: "none"
-            }, 0);
-
-            // Bottom bar fades out
-            tl.to(".hero-bottom-bar", {
-                opacity: 0,
-                y: 20,
-                duration: 0.6,
-                ease: "none"
-            }, 0);
-
-            // Decorative elements fade
-            tl.to(".hero-decor", {
-                opacity: 0,
-                duration: 0.6,
-                ease: "none"
-            }, 0);
-
-        }, sectionRef);
-
-        return () => ctx.revert();
-    }, []);
-
     return (
-        <section ref={sectionRef} className="w-full h-[100dvh] md:min-h-screen flex items-center py-8 sm:py-12 md:py-16 lg:py-20 overflow-x-hidden relative">
+        <section
+            ref={sectionRef}
+            className="w-full min-h-dvh md:min-h-screen overflow-x-hidden relative bg-black"
+        >
 
             {/* ── Decorative grid dots (top-right) ── */}
             <div className="hero-decor hidden lg:block absolute top-20 right-12 xl:right-20 opacity-20 pointer-events-none">
@@ -96,7 +35,7 @@ export default function Hero() {
             </div>
 
             {/* ── Vertical line accent (left) ── */}
-            <div className="hero-decor hidden md:block absolute left-6 lg:left-10 top-1/4 h-32 w-px bg-gradient-to-b from-transparent via-white/20 to-transparent pointer-events-none" />
+            <div className="hero-decor hidden md:block absolute left-6 lg:left-10 top-1/4 h-32 w-px bg-linear-to-b from-transparent via-white/20 to-transparent pointer-events-none" />
 
             {/* ── Corner brackets (bottom-left) ── */}
             <div className="hero-decor hidden lg:block absolute bottom-16 left-12 lg:left-20 pointer-events-none opacity-20">
@@ -109,8 +48,53 @@ export default function Hero() {
             </div>
 
             {/* ── Main content ── */}
-            <div className="w-full px-4 sm:px-6 md:pl-12 lg:pl-20 max-w-[1920px] mx-auto relative">
-                <div className="flex flex-col space-y-1 sm:space-y-2 md:space-y-3 lg:space-y-4">
+            <div className="w-full max-w-[1920px] mx-auto relative">
+                {/* Mobile layout (reference style) */}
+                <div className="md:hidden min-h-dvh px-6 pt-6 pb-6 flex flex-col">
+                    {/* Top mini header */}
+                    <div className="flex items-start justify-between gap-6">
+                        <div className="min-w-0">
+                            <div className="text-[10px] font-mono uppercase tracking-[0.25em] text-white/60">
+                                Dashboard
+                            </div>
+                        </div>
+
+                        <a
+                            href="#contacts"
+                            className="shrink-0 inline-flex items-center justify-center px-4 py-2 rounded-full border border-white/20 text-white/80 text-[10px] font-mono uppercase tracking-[0.25em] active:bg-white/10 transition-colors"
+                        >
+                            Contact
+                        </a>
+                    </div>
+
+                    {/* Big stacked title */}
+                    <div className="flex-1 flex items-center py-6">
+                        <div className="leading-[0.82] font-black uppercase tracking-tight text-[clamp(4.75rem,20vw,10.25rem)] sm:text-[clamp(6rem,22vw,11rem)] text-white/55 select-none">
+                            <div className="max-w-full">Full</div>
+                            <div className="relative max-w-full">
+                                <div className="absolute left-0 top-[0.62em] h-2 w-[clamp(3rem,12vw,6.5rem)] bg-white/25" />
+                                <div className="pl-[clamp(3.75rem,14vw,7.25rem)]">Stack</div>
+                            </div>
+                            <div className="max-w-full">Develop</div>
+                            <div className="max-w-full">Er</div>
+                        </div>
+                    </div>
+
+                    {/* Bottom about (no extra empty space) */}
+                    <div className="flex items-end justify-between gap-6">
+                        <div className="text-[10px] font-mono uppercase tracking-[0.25em] text-white/30">
+                            About
+                        </div>
+                        <p className="max-w-[24rem] text-xs leading-relaxed text-white/55">
+                            Passionate full-stack developer crafting modern, performant web experiences from concept to
+                            deployment.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Desktop/tablet layout (existing) */}
+                <div className="hidden md:block px-4 sm:px-6 md:pl-12 lg:pl-20 py-8 sm:py-12 md:py-16 lg:py-20">
+                    <div className="flex flex-col space-y-1 sm:space-y-2 md:space-y-3 lg:space-y-4">
                     {/* FULL */}
                     <div className="hero-text-block group relative inline-block overflow-hidden px-4 sm:px-6 md:px-8">
                         <div className="pointer-events-none absolute inset-0 origin-left scale-x-0 opacity-0 transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100 group-hover:opacity-100 will-change-[transform,opacity]">
@@ -168,7 +152,7 @@ export default function Hero() {
                     </div>
 
                     {/* Code snippet (desktop) */}
-                    <div className="hero-code-snippet hidden xl:block absolute xl:top-[calc((3.5rem*0.9)_+_0.25rem_+_3.5rem_+_0.25rem)] xl:right-20 font-mono text-sm leading-relaxed">
+                    <div className="hero-code-snippet hidden xl:block absolute xl:top-[calc((3.5rem*0.9)+0.25rem+3.5rem+0.25rem)] xl:right-20 font-mono text-sm leading-relaxed">
                         <div className="text-white/50">const <span className="text-white/70">identity</span> = &#123;</div>
                         <div className="pl-4 text-white/40">
                             name: <span className="text-white/60">&quot;Roman Caseres&quot;</span>,
@@ -219,10 +203,11 @@ export default function Hero() {
                         </div>
                     </div>
                 </div>
+                </div>
             </div>
 
             {/* ── Bottom bar with metadata ── */}
-            <div className="hero-bottom-bar absolute bottom-6 sm:bottom-8 left-0 right-0 px-4 sm:px-6 md:px-12 lg:px-20 flex items-center justify-between pointer-events-none">
+            <div className="hero-bottom-bar hidden md:flex absolute bottom-6 sm:bottom-8 left-0 right-0 px-4 sm:px-6 md:px-12 lg:px-20 items-center justify-between pointer-events-none">
                 {/* Available badge */}
                 <div className="flex items-center gap-2">
                     <span className="relative flex h-2 w-2">
@@ -248,7 +233,7 @@ export default function Hero() {
             </div>
 
             {/* ── Horizontal divider at very bottom ── */}
-            <div className="hero-decor absolute bottom-0 left-4 sm:left-6 md:left-12 lg:left-20 right-4 sm:right-6 md:right-12 lg:right-20 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+            <div className="hero-decor absolute bottom-0 left-4 sm:left-6 md:left-12 lg:left-20 right-4 sm:right-6 md:right-12 lg:right-20 h-px bg-linear-to-r from-transparent via-white/10 to-transparent" />
         </section>
     );
 }

@@ -21,9 +21,10 @@ export default function Home() {
       <FloatingSocials />
       
       <ScrollSection><Hero /></ScrollSection>
-      <ScrollSection><Stats /></ScrollSection>
       <ScrollSection><Marquee /></ScrollSection>
-      <ScrollSection><Experience /></ScrollSection>
+      <ScrollSection><Stats /></ScrollSection>
+      
+      {/* <ScrollSection><Experience /></ScrollSection> */}
       <ScrollSection><Projects /></ScrollSection>
       <ScrollSection><Skills /></ScrollSection>
       <ScrollSection><Achievements /></ScrollSection>

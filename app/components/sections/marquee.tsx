@@ -10,7 +10,8 @@ if (typeof window !== "undefined") {
 
 export default function Marquee() {
     const sectionRef = useRef<HTMLDivElement>(null);
-    const trackRef = useRef<HTMLDivElement>(null);
+    const trackTopRef = useRef<HTMLDivElement>(null);
+    const trackBottomRef = useRef<HTMLDivElement>(null);
     const mobileRow1Ref = useRef<HTMLDivElement>(null);
     const mobileRow2Ref = useRef<HTMLDivElement>(null);
 
@@ -59,30 +60,47 @@ export default function Marquee() {
                 });
 
             } else {
-                // DESKTOP STYLE: The classic horizontal pin scroll
-                const track = trackRef.current!;
-                const calculateValues = () => {
-                    const startX = window.innerWidth - 350;
-                    const endX = -(track.scrollWidth - window.innerWidth);
+                // DESKTOP STYLE: Two horizontal marquees pinned, opposite directions
+                const trackTop = trackTopRef.current!;
+                const trackBottom = trackBottomRef.current!;
+
+                const calculateValues = (trackEl: HTMLDivElement) => {
+                    // Start slightly offscreen for a cleaner first frame
+                    const startX = window.innerWidth * 0.25;
+                    // Don't force the entire track to pass; keeps composition readable
+                    const endX = -(trackEl.scrollWidth - window.innerWidth * 0.85);
                     return { startX, endX };
                 };
 
-                let { startX, endX } = calculateValues();
+                const getTop = () => calculateValues(trackTop);
+                const getBottom = () => calculateValues(trackBottom);
 
-                gsap.fromTo(track, 
-                    { x: startX },
-                    {
-                        x: endX,
-                        ease: "none",
-                        scrollTrigger: {
-                            trigger: sectionRef.current,
-                            start: "top top",
-                            end: () => `+=${Math.abs(startX - endX) * 1.5}`,
-                            pin: true,
-                            scrub: 0.5,
-                            invalidateOnRefresh: true,
-                        },
-                    }
+                // Single ScrollTrigger drives both rows (prevents pin/desync issues)
+                const tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: sectionRef.current,
+                        // Start as soon as the section begins to enter the viewport
+                        start: "top bottom",
+                        end: "bottom top",
+                        scrub: 0.12,
+                        invalidateOnRefresh: true,
+                    },
+                });
+
+                // Top row: right -> left
+                tl.fromTo(
+                    trackTop,
+                    { x: () => getTop().startX },
+                    { x: () => getTop().endX, ease: "none" },
+                    0
+                );
+
+                // Bottom row: left -> right
+                tl.fromTo(
+                    trackBottom,
+                    { x: () => getBottom().endX },
+                    { x: () => getBottom().startX, ease: "none" },
+                    0
                 );
             }
         }, sectionRef);
@@ -93,35 +111,40 @@ export default function Marquee() {
     return (
         <section
             ref={sectionRef}
-            className="relative overflow-hidden bg-black py-20 md:py-0 md:h-screen"
+            className="relative overflow-hidden bg-black py-16 sm:py-20 md:py-24"
         >
             {/* DESKTOP VIEW */}
-            <div className="hidden md:flex h-full items-center justify-start overflow-visible">
-                <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
-                <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
+            <div className="hidden md:flex items-center overflow-hidden">
+                <div className="absolute inset-y-0 left-0 w-32 bg-linear-to-r from-black to-transparent z-10 pointer-events-none" />
+                <div className="absolute inset-y-0 right-0 w-32 bg-linear-to-l from-black to-transparent z-10 pointer-events-none" />
                 
-                <div
-                    ref={trackRef}
-                    className="flex items-center whitespace-nowrap will-change-transform"
-                >
-                    <span className="text-[clamp(10rem,15vw,18rem)] font-black text-white leading-none tracking-tighter select-none">
-                        Web Dev
-                    </span>
-                    <span className="text-[clamp(4rem,6vw,6rem)] text-white/20 mx-16 select-none font-light italic">
-                        &
-                    </span>
-                    <span className="text-[clamp(10rem,15vw,18rem)] font-black text-white leading-none tracking-tighter select-none">
-                        App Dev
-                    </span>
+                <div className="w-full flex flex-col justify-center gap-12 lg:gap-14">
+                    {/* Row 1 (right -> left) */}
+                    <div
+                        ref={trackTopRef}
+                        className="flex items-center whitespace-nowrap will-change-transform"
+                    >
+                        <span className="text-[clamp(6rem,12vw,14rem)] font-black text-white leading-[0.9] tracking-tighter select-none">
+                            Web Dev
+                        </span>
+                        <span className="text-[clamp(3rem,5vw,5rem)] text-white/20 mx-14 select-none font-light italic">
+                            &
+                        </span>
+                        <span className="text-[clamp(6rem,12vw,14rem)] font-black text-white leading-[0.9] tracking-tighter select-none">
+                            App Dev
+                        </span>
 
-                    <div className="ml-32 pr-40 flex flex-col gap-2">
-                        <span className="text-base text-white/40 font-mono uppercase tracking-[0.2em]">Services</span>
-                        <div className="h-px w-8 bg-white/20 mb-2" />
-                        <span className="text-xl text-white/70 font-bold uppercase tracking-tight">Frontend Development</span>
-                        <span className="text-xl text-white/70 font-bold uppercase tracking-tight">Backend Systems</span>
-                        <span className="text-xl text-white/70 font-bold uppercase tracking-tight">Responsive Design</span>
-                        <span className="text-xl text-white/70 font-bold uppercase tracking-tight">API Integration</span>
+                        <div className="ml-24 pr-32 flex flex-col gap-2">
+                            <span className="text-base text-white/40 font-mono uppercase tracking-[0.2em]">Services</span>
+                            <div className="h-px w-8 bg-white/20 mb-2" />
+                            <span className="text-xl text-white/70 font-bold uppercase tracking-tight">Frontend Development</span>
+                            <span className="text-xl text-white/70 font-bold uppercase tracking-tight">Backend Systems</span>
+                            <span className="text-xl text-white/70 font-bold uppercase tracking-tight">Responsive Design</span>
+                            <span className="text-xl text-white/70 font-bold uppercase tracking-tight">API Integration</span>
+                        </div>
                     </div>
+
+                
                 </div>
             </div>
 
