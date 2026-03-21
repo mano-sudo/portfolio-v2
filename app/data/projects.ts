@@ -1,3 +1,5 @@
+import { PROJECT_DESCRIPTIONS } from "./project-descriptions";
+
 export type Project = {
     slug: string;
     title: string;
@@ -12,13 +14,13 @@ export type Project = {
     image: string;
 };
 
-export const projects: readonly Project[] = [
+type ProjectCore = Omit<Project, "description">;
+
+const projectCoreList: readonly ProjectCore[] = [
     {
         slug: "attendance-monitoring-system",
         title: "Attendance Monitoring System",
         role: "Full-Stack Developer",
-        description:
-            "A web-based attendance monitoring system with real-time time-in/time-out logging, admin controls, and automated attendance reporting.",
         highlights: [
             "Built real-time attendance logging for employee time-in and time-out.",
             "Implemented admin dashboard tools for employee and schedule management.",
@@ -36,8 +38,6 @@ export const projects: readonly Project[] = [
         slug: "outfit-haven-ecommerce-platform",
         title: "OutfitHaven: Responsive E-Commerce Platform",
         role: "Full-Stack Developer",
-        description:
-            "A modern e-commerce platform for local fashion brands in the Philippines with dynamic storefront experiences and secure order handling.",
         highlights: [
             "Built product browsing and checkout flows for a smooth buying experience.",
             "Designed responsive UI for improved mobile and desktop usability.",
@@ -55,8 +55,6 @@ export const projects: readonly Project[] = [
         slug: "burger-ka-samen-ordering-system",
         title: "Burger Ka Samen Ordering System",
         role: "Full-Stack Developer",
-        description:
-            "A full-stack burger ordering platform with customer cart and checkout plus an admin dashboard for products, orders, and users.",
         highlights: [
             "Implemented customer ordering flow with cart and checkout.",
             "Built admin dashboard modules for products, users, and orders.",
@@ -74,8 +72,6 @@ export const projects: readonly Project[] = [
         slug: "omnichannel-ecommerce-analytics-system",
         title: "Omnichannel E-commerce Analytics System",
         role: "Full-Stack Developer (Lead Frontend)",
-        description:
-            "A full-stack omnichannel platform integrating Shopee, Lazada, TikTok Shop, and Shopify for centralized analytics and operations.",
         highlights: [
             "Integrated Shopee, Lazada, TikTok Shop, and Shopify into one platform.",
             "Built dashboards for revenue, profit, expenses, and losses across stores.",
@@ -94,8 +90,6 @@ export const projects: readonly Project[] = [
         slug: "enterprise-ecommerce-crm-hris-finance-ess",
         title: "E-commerce Platform with CRM, HRIS, Finance & ESS Modules",
         role: "Lead Frontend Developer",
-        description:
-            "A multi-module enterprise platform centralizing CRM, HRIS, Finance, and ESS with real-time communication and operational analytics.",
         highlights: [
             "Led frontend development for CRM, HRIS, Finance, and ESS modules.",
             "Integrated Shopee, Lazada, TikTok, and Facebook for real-time messaging sync.",
@@ -114,8 +108,6 @@ export const projects: readonly Project[] = [
         slug: "electronic-medical-record-system",
         title: "Electronic Medical Record (EMR) System",
         role: "Full-Stack Developer",
-        description:
-            "A full-stack EMR platform for digitized patient record management, consultation tracking, and usage analytics.",
         highlights: [
             "Built patient profile and medical history management workflows.",
             "Implemented consultation tracking with video recording support.",
@@ -134,8 +126,6 @@ export const projects: readonly Project[] = [
         slug: "car-dealership-trading-loan-management",
         title: "Car Dealership Trading & Loan Management System",
         role: "Full-Stack Developer",
-        description:
-            "A full-stack car dealership platform with customer application landing pages and admin tools for loans, leads, and role-based operations.",
         highlights: [
             "Built customer loan application flows connected to admin review dashboards.",
             "Implemented backend role-based access control for team responsibilities.",
@@ -151,6 +141,16 @@ export const projects: readonly Project[] = [
         image: "/images/projects/dbauto.png",
     },
 ];
+
+function attachDescription(core: ProjectCore): Project {
+    const description = PROJECT_DESCRIPTIONS[core.slug];
+    if (description === undefined) {
+        throw new Error(`Missing PROJECT_DESCRIPTIONS entry for slug: ${core.slug}`);
+    }
+    return { ...core, description };
+}
+
+export const projects: readonly Project[] = projectCoreList.map(attachDescription);
 
 export const getProjectBySlug = (slug: string): Project | null => {
     return projects.find((project) => project.slug === slug) ?? null;

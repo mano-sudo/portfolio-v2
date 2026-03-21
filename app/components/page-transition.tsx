@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useState, type ReactNode } from "react";
+import { releaseDocumentScroll } from "@/app/utils/release-document-scroll";
+import { logProjectsScroll } from "@/app/utils/projects-scroll-debug";
 
 type PageTransitionProps = {
   children: ReactNode;
@@ -23,6 +25,8 @@ export default function PageTransition({ children }: PageTransitionProps) {
     const shouldReveal = window.sessionStorage.getItem("project-transition-reveal") === "1";
     if (!shouldReveal) {
       setPlayReveal(false);
+      setLockScroll(false);
+      releaseDocumentScroll();
       return;
     }
 
@@ -36,21 +40,32 @@ export default function PageTransition({ children }: PageTransitionProps) {
 
   useEffect(() => {
     if (!lockScroll) return;
-
-    const previousHtmlOverflow = document.documentElement.style.overflow;
-    const previousBodyOverflow = document.body.style.overflow;
+    logProjectsScroll("PageTransition applying DOM scroll lock", { lockScroll });
     document.documentElement.classList.add("route-transition-lock");
     document.body.classList.add("route-transition-lock");
     document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
 
     return () => {
-      document.documentElement.classList.remove("route-transition-lock");
-      document.body.classList.remove("route-transition-lock");
-      document.documentElement.style.overflow = previousHtmlOverflow;
-      document.body.style.overflow = previousBodyOverflow;
+      logProjectsScroll("PageTransition lock effect cleanup -> releaseDocumentScroll");
+      releaseDocumentScroll();
     };
   }, [lockScroll]);
+
+  // Failsafe: always release scroll lock even if animation callback is skipped
+  useEffect(() => {
+    if (!playReveal) return;
+    const timeoutId = window.setTimeout(() => {
+      logProjectsScroll("PageTransition failsafe timeout -> unlock", { pathname });
+      setPlayReveal(false);
+      setLockScroll(false);
+      releaseDocumentScroll();
+    }, 1800);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [playReveal]);
 
   return (
     <>
@@ -76,8 +91,10 @@ export default function PageTransition({ children }: PageTransitionProps) {
               },
             }}
             onAnimationComplete={() => {
+              logProjectsScroll("PageTransition onAnimationComplete -> unlock", { pathname });
               setPlayReveal(false);
               setLockScroll(false);
+              releaseDocumentScroll();
             }}
           />
         </div>

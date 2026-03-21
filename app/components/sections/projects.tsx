@@ -4,6 +4,11 @@ import { ExternalLink, Github } from "lucide-react";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { projects, type Project } from "@/app/data/projects";
+import { releaseDocumentScroll } from "@/app/utils/release-document-scroll";
+import {
+    prefersHardNavigationToProjectDetail,
+    projectDetailPath,
+} from "@/app/utils/project-detail-navigation";
 import { motion } from "framer-motion";
 
 export default function Projects() {
@@ -60,12 +65,18 @@ export default function Projects() {
 
     const navigateToProject = useCallback((slug: string) => {
         if (isNavigatingToProject) return;
+
+        if (prefersHardNavigationToProjectDetail()) {
+            window.location.assign(projectDetailPath(slug));
+            return;
+        }
+
         setIsNavigatingToProject(true);
         setTransitionKey((value) => value + 1);
         navTimeoutRef.current = window.setTimeout(() => {
             window.sessionStorage.setItem("route-transition-lock", "1");
             window.sessionStorage.setItem("project-transition-reveal", "1");
-            router.push(`/projects/${slug}`);
+            router.push(projectDetailPath(slug));
         }, 620);
     }, [isNavigatingToProject, router]);
 
@@ -86,22 +97,13 @@ export default function Projects() {
     React.useEffect(() => {
         if (!isNavigatingToProject) return;
 
-        const previousHtmlOverflow = document.documentElement.style.overflow;
-        const previousBodyOverflow = document.body.style.overflow;
         document.documentElement.classList.add("route-transition-lock");
         document.body.classList.add("route-transition-lock");
         document.documentElement.style.overflow = "hidden";
         document.body.style.overflow = "hidden";
 
         return () => {
-            const keepLockForNextRoute = window.sessionStorage.getItem("route-transition-lock") === "1";
-            if (keepLockForNextRoute) {
-                return;
-            }
-            document.documentElement.classList.remove("route-transition-lock");
-            document.body.classList.remove("route-transition-lock");
-            document.documentElement.style.overflow = previousHtmlOverflow;
-            document.body.style.overflow = previousBodyOverflow;
+            releaseDocumentScroll();
         };
     }, [isNavigatingToProject]);
 

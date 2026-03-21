@@ -61,7 +61,7 @@ export default function AppNavbar() {
     const navItems = [
         { name: "ABOUT", href: "/" },
         { name: "PROJECTS", href: "/projects" },
-        { name: "CONTACTS", href: "/contacts" },
+        { name: "CONTACTS", href: "/#contact" },
     ];
 
     return (

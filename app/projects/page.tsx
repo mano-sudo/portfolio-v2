@@ -4,6 +4,15 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { projects } from "@/app/data/projects";
+import { releaseDocumentScroll } from "@/app/utils/release-document-scroll";
+import {
+  prefersHardNavigationToProjectDetail,
+  projectDetailPath,
+} from "@/app/utils/project-detail-navigation";
+import {
+  logPrefersHardNavContext,
+  logProjectsScroll,
+} from "@/app/utils/projects-scroll-debug";
 
 export default function ProjectsPage() {
   const router = useRouter();
@@ -13,12 +22,37 @@ export default function ProjectsPage() {
 
   const navigateToProject = useCallback((slug: string) => {
     if (isNavigating) return;
+
+    const hard = prefersHardNavigationToProjectDetail();
+    logProjectsScroll("/projects card click", {
+      slug,
+      hardNavigation: hard,
+      targetPath: projectDetailPath(slug),
+      ...logPrefersHardNavContext(),
+    });
+
+    if (hard) {
+      logProjectsScroll("/projects -> location.assign (hard nav)", {
+        slug,
+        path: projectDetailPath(slug),
+      });
+      window.location.assign(projectDetailPath(slug));
+      return;
+    }
+
     setIsNavigating(true);
     setTransitionKey((value) => value + 1);
 
+    logProjectsScroll("/projects scroll lock ON (isNavigating)", {});
+
     navTimeoutRef.current = window.setTimeout(() => {
+      logProjectsScroll("/projects -> router.push (soft nav)", {
+        slug,
+        path: projectDetailPath(slug),
+      });
       window.sessionStorage.setItem("route-transition-lock", "1");
-      router.push(`/projects/${slug}`);
+      window.sessionStorage.setItem("project-transition-reveal", "1");
+      router.push(projectDetailPath(slug));
     }, 620);
   }, [isNavigating, router]);
 
@@ -33,20 +67,16 @@ export default function ProjectsPage() {
   useEffect(() => {
     if (!isNavigating) return;
 
-    const previousHtmlOverflow = document.documentElement.style.overflow;
-    const previousBodyOverflow = document.body.style.overflow;
     document.documentElement.classList.add("route-transition-lock");
     document.body.classList.add("route-transition-lock");
     document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
 
     return () => {
-      const keepLockForNextRoute = window.sessionStorage.getItem("route-transition-lock") === "1";
-      if (keepLockForNextRoute) return;
-      document.documentElement.classList.remove("route-transition-lock");
-      document.body.classList.remove("route-transition-lock");
-      document.documentElement.style.overflow = previousHtmlOverflow;
-      document.body.style.overflow = previousBodyOverflow;
+      logProjectsScroll("/projects scroll lock cleanup (releaseDocumentScroll)", {
+        wasNavigating: true,
+      });
+      releaseDocumentScroll();
     };
   }, [isNavigating]);
 
